@@ -94,6 +94,8 @@ class ViewRegistration(BaseXmlModel):
     setup: str = attr()
     view_transforms: list[AffineViewTransform] = element(tag="ViewTransform")
 
+class ViewRegistrations(BaseXmlModel):
+    elements: list[ViewRegistration] = element(tag='ViewRegistration')
 
 class SpimData(BaseXmlModel):
     """
@@ -101,18 +103,42 @@ class SpimData(BaseXmlModel):
     """
 
     version: Literal["0.2"] = attr(version="0.2")
-    base_path: BasePath
-    sequence_description: SequenceDescription
-    view_registrations: list[ViewRegistration] = element(tag="ViewRegistration")
+    base_path: BasePath = element(tag='BasePath')
+    sequence_description: SequenceDescription = element(tag='SequenceDescription')
+    view_registrations: ViewRegistrations = element(tag="ViewRegistrations")
 
+
+class ViewInterestPointsFile(BaseXmlModel):
+    timepoint: str = attr()
+    setup: str = attr()
+    label: str = attr()
+    params: str = attr()
 
 class ViewInterestPoints(BaseXmlModel):
-    pass
+    data: list[ViewInterestPointsFile] = element(tag='ViewInterestPointsFile')
 
+class BoundingBox(BaseXmlModel):
+    """
+    https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/boundingbox/BoundingBox.java#L30
+    """
+    title: str = attr()
+    mininum: str = attr(name='min')
+    maximum: str = attr(name='max')
+
+class BoundingBoxes(BaseXmlModel):
+    """
+    https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/boundingbox/BoundingBoxes.java#L29
+    """
+    data: list[BoundingBox] | None = element(tag='BoundingBox', default=None)
 
 class SpimData2(SpimData, tag="SpimData"):
     """
     https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/SpimData2.java#L64
     """
 
-    ViewInterestPoints: ViewInterestPoints
+    view_interest_points: ViewInterestPoints = element(tag='ViewInterestPoints')
+    bounding_boxes: BoundingBoxes = element(tag='BoundingBoxes')
+#    point_spread_functions: PointSpreadFunctions
+#    stitching_results: StitchingResults
+#    intensity_adjustments: IntensityAdjustments 
+
