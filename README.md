@@ -5,7 +5,7 @@
 
 -----
 
-Pydantic models for [bigsticher](https://github.com/PreibischLab/BigStitcher)
+Pydantic models for [bigsticher](https://github.com/PreibischLab/BigStitcher). This is very minimal right now, with features being added only as needed.
 
 **Table of Contents**
 

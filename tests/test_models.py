@@ -93,5 +93,5 @@ def test_decode_sequence_description():
     _ = SequenceDescription.from_xml(data)
 
 
-def decode_test(demo_xml: str) -> None:
+def test_decode(demo_xml: str) -> None:
     _ = SpimData2.from_xml(demo_xml)
