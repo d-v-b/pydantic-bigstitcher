@@ -1,4 +1,4 @@
-from pydantic_bigstitcher import PatternTimePoints, SequenceDescription, SpimData2, ZGroup, ZarrImageLoader
+from pydantic_bigstitcher import PatternTimePoints, SequenceDescription, SpimData2, ZarrImageLoader, ZGroup
 
 
 def test_decode_zarr_image_loader():
@@ -14,12 +14,14 @@ def test_decode_zarr_image_loader():
     """
     ZarrImageLoader.from_xml(data)
 
+
 def test_decode_zgroup():
     data = """
         <zgroup setup="0" timepoint="0">
           <path>tile_x_0000_y_0000_z_0000_ch_488.zarr</path>
         </zgroup>"""
     ZGroup.from_xml(data)
+
 
 def test_decode_timepoints():
     data = """
@@ -28,6 +30,7 @@ def test_decode_timepoints():
     </Timepoints>
         """
     PatternTimePoints.from_xml(data)
+
 
 def test_decode_sequence_description():
     data = """
@@ -87,10 +90,8 @@ def test_decode_sequence_description():
     <MissingViews />
   </SequenceDescription>
     """
-    decoded = SequenceDescription.from_xml(data)
+    _ = SequenceDescription.from_xml(data)
 
 
 def decode_test(demo_xml: str) -> None:
-    decoded = SpimData2.from_xml(demo_xml)
-    print(decoded.model_dump())
-    
+    _ = SpimData2.from_xml(demo_xml)

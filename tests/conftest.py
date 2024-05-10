@@ -1,4 +1,4 @@
-demo_xml  = """
+demo_xml = """
 <?xml version="1.0" encoding="UTF-8"?>
 <SpimData version="0.2">
   <BasePath type="relative">.</BasePath>
@@ -599,4 +599,4 @@ demo_xml  = """
   <StitchingResults />
   <IntensityAdjustments />
 </SpimData>
-"""
+"""  # noqa: E501
