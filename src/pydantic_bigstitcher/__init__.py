@@ -12,7 +12,7 @@ class BasePath(BaseXmlModel):
 class ZGroup(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
     timepoint: str = attr()
-    path: str = element()
+    path: str | None = element(default=None)
 
 
 class ZGroups(BaseXmlModel, tag="zgroups"):
@@ -26,8 +26,9 @@ class Zarr(BaseXmlModel, tag="zarr"):
 class ZarrImageLoader(BaseXmlModel, tag="ImageLoader"):
     fmt: str = attr(name="format")
     version: str = attr()
+    s3bucket: str | None = element(default=None)
     zarr: Zarr = element(tag="zarr")
-    zgroups: ZGroups
+    zgroups: ZGroups = element(tag="zgroups")
 
 
 class VoxelSize(BaseXmlModel):
@@ -138,7 +139,7 @@ class SpimData2(SpimData, tag="SpimData"):
 
     view_interest_points: ViewInterestPoints = element(tag='ViewInterestPoints')
     bounding_boxes: BoundingBoxes = element(tag='BoundingBoxes')
-#    point_spread_functions: PointSpreadFunctions
-#    stitching_results: StitchingResults
-#    intensity_adjustments: IntensityAdjustments 
+    # point_spread_functions: PointSpreadFunctions
+    # stitching_results: StitchingResults
+    # intensity_adjustments: IntensityAdjustments 
 
