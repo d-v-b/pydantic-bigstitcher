@@ -3,7 +3,7 @@ from xml.etree import ElementTree as etree
 import pytest
 from xmldiff import main
 
-from pydantic_bigstitcher import PatternTimePoints, SequenceDescription, SpimData2, ZarrImageLoader, ZGroup
+from pydantic_bigstitcher import PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ZarrImageLoader, ZGroup
 
 
 def test_decode_zarr_image_loader():
@@ -17,7 +17,11 @@ def test_decode_zarr_image_loader():
       </zgroups>
     </ImageLoader>
     """
-    ZarrImageLoader.from_xml(data)
+    observed = ZarrImageLoader.from_xml(data)
+    observed_xml_str = etree.tostring(etree.fromstring(observed.to_xml()))
+    data_xml_str = etree.tostring(etree.fromstring(data))
+    diff_result = main.diff_texts(data_xml_str, observed_xml_str)
+    assert diff_result == []
 
 def test_decode_zarr_image_loader_2():
     data = """<ImageLoader format="bdv.multimg.zarr" version="1.0">
@@ -29,50 +33,14 @@ def test_decode_zarr_image_loader_2():
     <zgroup setup="0" timepoint="0">
     <path>tile_x_0000_y_0000_z_0000_ch_488.zarr</path>
     </zgroup>
-    <zgroup setup="1" timepoint="0">
-    <path>tile_x_0000_y_0001_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="2" timepoint="0">
-    <path>tile_x_0000_y_0002_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="3" timepoint="0">
-    <path>tile_x_0001_y_0000_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="4" timepoint="0">
-    <path>tile_x_0001_y_0001_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="5" timepoint="0">
-    <path>tile_x_0001_y_0002_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="6" timepoint="0">
-    <path>tile_x_0002_y_0000_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="7" timepoint="0">
-    <path>tile_x_0002_y_0001_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="8" timepoint="0">
-    <path>tile_x_0002_y_0002_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="9" timepoint="0">
-    <path>tile_x_0003_y_0000_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="10" timepoint="0">
-    <path>tile_x_0003_y_0001_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="11" timepoint="0">
-    <path>tile_x_0003_y_0002_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="12" timepoint="0">
-    <path>tile_x_0004_y_0000_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="13" timepoint="0">
-    <path>tile_x_0004_y_0001_z_0000_ch_488.zarr</path>
-    </zgroup>
-    <zgroup setup="14" timepoint="0">
-    </zgroup>
     </zgroups>
     </ImageLoader>"""
-    ZarrImageLoader.from_xml(data)
+    observed = ZarrImageLoader.from_xml(data)
+    observed_xml_str = etree.tostring(etree.fromstring(observed.to_xml()))
+    data_xml_str = etree.tostring(etree.fromstring(data))
+
+    diff_result = main.diff_texts(data_xml_str, observed_xml_str)
+    assert diff_result == []
 
 
 def test_decode_zgroup():
@@ -80,7 +48,12 @@ def test_decode_zgroup():
         <zgroup setup="0" timepoint="0">
           <path>tile_x_0000_y_0000_z_0000_ch_488.zarr</path>
         </zgroup>"""
-    ZGroup.from_xml(data)
+    observed = ZGroup.from_xml(data)
+    observed_xml_str = etree.tostring(etree.fromstring(observed.to_xml()))
+    data_xml_str = etree.tostring(etree.fromstring(data))
+
+    diff_result = main.diff_texts(data_xml_str, observed_xml_str)
+    assert diff_result == []
 
 
 def test_decode_timepoints():
@@ -89,8 +62,12 @@ def test_decode_timepoints():
       <integerpattern>0</integerpattern>
     </Timepoints>
         """
-    PatternTimePoints.from_xml(data)
+    observed = PatternTimePoints.from_xml(data)
+    observed_xml_str = etree.tostring(etree.fromstring(observed.to_xml()))
+    data_xml_str = etree.tostring(etree.fromstring(data))
 
+    diff_result = main.diff_texts(data_xml_str, observed_xml_str)
+    assert diff_result == []
 
 def test_decode_sequence_description():
     data = """
@@ -157,13 +134,24 @@ def test_decode_sequence_description():
     diff_result = main.diff_texts(data_xml_str, observed_xml_str)
     assert diff_result == []
 
-@pytest.mark.xfail
-def test_encode_decode(demo_xml_0: str) -> None:
-    model = SpimData2.from_xml(demo_xml_0)
-    assert model.to_xml() == demo_xml_0
+def test_decode_view_interest_points():
+    data = """
+      <ViewInterestPoints>
+        <ViewInterestPointsFile timepoint="0" setup="0" label="beads"
+            params="DOG (Spark) s=1.8 t=0.003 overlappingOnly=true min=false max=true downsampleXY=8 downsampleZ=8 minIntensity=0.0 maxIntensity=20000.0">
+            tpId_0_viewSetupId_0/beads</ViewInterestPointsFile>
+    </ViewInterestPoints>
+    """
 
-def test_decode_2(demo_xml_0) -> None:
-    model = SpimData2.from_xml(demo_xml_0)
-    model_xml = model.to_xml()
+    observed = ViewInterestPoints.from_xml(data)
+    observed_xml_str = etree.tostring(etree.fromstring(observed.to_xml()))
+    data_xml_str = etree.tostring(etree.fromstring(data))
+    diff_result = main.diff_texts(data_xml_str, observed_xml_str)
+    assert diff_result == []
+    
 
-    assert model_xml == demo_xml_0
+@pytest.mark.parametrize('xml_data', (1,2), indirect=('xml_data',))
+def test_encode_decode(xml_data: str) -> None:
+    model = SpimData2.from_xml(xml_data.encode())
+    assert model.to_xml() == xml_data
+

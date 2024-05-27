@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic_xml import BaseXmlModel, attr, element
 
@@ -23,10 +23,10 @@ class Zarr(BaseXmlModel):
     typ: str = attr(name="type")
     path: str
 
-class ZarrImageLoader(BaseXmlModel, tag="ImageLoader"):
+class ZarrImageLoader(BaseXmlModel, tag='ImageLoader', skip_empty=True):
     fmt: str = attr(name="format")
     version: str = attr()
-    s3bucket: str | None = element(default=None)
+    s3bucket: Optional[str] = element(default=None)
     zarr: Zarr = element(tag="zarr")
     zgroups: ZGroups = element(tag="zgroups")
 
@@ -73,7 +73,7 @@ class SequenceDescription(BaseXmlModel):
     https://github.com/bigdataviewer/spimdata/blob/46c3878baef80cc4170a33012c8281481dbbfcb2/src/main/java/mpicbg/spim/data/generic/sequence/AbstractSequenceDescription.java#L52
     """
 
-    image_loader: ZarrImageLoader
+    image_loader: ZarrImageLoader = element(tag="ImageLoader")
     view_setups: ViewSetups = element(tag="ViewSetups")
     time_points: PatternTimePoints = element(tag="Timepoints")
     missing_views: MissingViews = element(tag="MissingViews")
@@ -113,7 +113,7 @@ class ViewInterestPointsFile(BaseXmlModel):
     setup: str = attr()
     label: str = attr()
     params: str = attr()
-
+    path: str 
 class ViewInterestPoints(BaseXmlModel):
     data: list[ViewInterestPointsFile] = element(tag='ViewInterestPointsFile')
 
