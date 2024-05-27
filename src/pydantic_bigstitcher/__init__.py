@@ -15,13 +15,13 @@ class ZGroup(BaseXmlModel, tag="zgroup"):
     path: str | None = element(default=None)
 
 
-class ZGroups(BaseXmlModel, tag="zgroups"):
+class ZGroups(BaseXmlModel):
     zgroups: list[ZGroup] = element(tag="zgroup")
 
 
-class Zarr(BaseXmlModel, tag="zarr"):
+class Zarr(BaseXmlModel):
     typ: str = attr(name="type")
-
+    path: str
 
 class ZarrImageLoader(BaseXmlModel, tag="ImageLoader"):
     fmt: str = attr(name="format")

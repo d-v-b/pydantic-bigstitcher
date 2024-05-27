@@ -1,5 +1,7 @@
 from pydantic_bigstitcher import PatternTimePoints, SequenceDescription, SpimData2, ZarrImageLoader, ZGroup
 import pytest
+from xml.etree import ElementTree as etree
+from xmldiff import main
 
 def test_decode_zarr_image_loader():
     data = """
@@ -145,7 +147,12 @@ def test_decode_sequence_description():
     <MissingViews />
   </SequenceDescription>
     """
-    _ = SequenceDescription.from_xml(data)
+    observed = SequenceDescription.from_xml(data)
+    observed_xml_str = etree.tostring(etree.fromstring(observed.to_xml()))
+    data_xml_str = etree.tostring(etree.fromstring(data))
+    
+    diff_result = main.diff_texts(data_xml_str, observed_xml_str)
+    assert diff_result == []
 
 @pytest.mark.xfail
 def test_encode_decode(demo_xml_0: str) -> None:
