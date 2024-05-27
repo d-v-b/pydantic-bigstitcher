@@ -140,5 +140,5 @@ class SpimData2(SpimData, tag="SpimData"):
     bounding_boxes: BoundingBoxes = element(tag='BoundingBoxes')
     # point_spread_functions: PointSpreadFunctions
     # stitching_results: StitchingResults
-    # intensity_adjustments: IntensityAdjustments 
+    # intensity_adjustments: IntensityAdjustments
 
