@@ -7,7 +7,7 @@ from pydantic_xml import BaseXmlModel, attr, element
 
 class BasePath(BaseXmlModel):
     typ: Literal["relative", "absolute"] = attr(name="type")
-
+    path: str | None = element(default=None)
 
 class ZGroup(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
@@ -29,7 +29,6 @@ class ZarrImageLoader(BaseXmlModel, tag="ImageLoader"):
     s3bucket: str | None = element(default=None)
     zarr: Zarr = element(tag="zarr")
     zgroups: ZGroups = element(tag="zgroups")
-
 
 class VoxelSize(BaseXmlModel):
     unit: str = element()
