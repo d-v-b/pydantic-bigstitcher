@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 
 from pydantic_xml import BaseXmlModel, attr, element
 
 
 class BasePath(BaseXmlModel):
     typ: Literal["relative", "absolute"] = attr(name="type")
-    path: str | None = element(default=None)
+    path: str
 
 class ZGroup(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
@@ -35,23 +35,43 @@ class VoxelSize(BaseXmlModel):
     size: str = element()
 
 
-class Attributes(BaseXmlModel):
+class ViewSetupAttributes(BaseXmlModel):
     illumination: str = element()
     channel: str = element()
     tile: str = element()
     angle: str = element()
-
 
 class ViewSetup(BaseXmlModel):
     ident: str = element(tag="id")
     name: str = element()
     size: str = element()
     voxel_size: VoxelSize = element(tag="voxelSize")
-    attributes: Attributes
+    attributes: ViewSetupAttributes = element(tag='attributes')
 
+class Attribute(BaseXmlModel):
+    id: int = element(tag='id')
+    name: str = element(tag='name')
+
+class IlluminationAttribute(BaseXmlModel, tag='Attributes'):
+    name: Literal["illumination"] = attr(tag='name')
+    illumination: list[Attribute] = element(tag='Illumination')
+
+class TileAttribute(BaseXmlModel, tag='Attributes'):
+    name: Literal["tile"] = attr(tag='name')
+    tile: list[Attribute] = element(tag='Tile')
+
+class AngleAttribute(BaseXmlModel, tag='Attributes'):
+    name: Literal["angle"] = attr(tag='name')
+    angle: list[Attribute] = element(tag='Angle')
+
+class ChannelAttribute(BaseXmlModel, tag='Attributes'):
+    name: Literal["channel"] = attr(tag='name')
+    angle: list[Attribute] = element(tag='Channel')
 
 class ViewSetups(BaseXmlModel):
-    view_setup: list[ViewSetup] = element(tag="ViewSetup")
+    # the order of the definition of these attributes should match the order of the data in xml
+    view_setups: list[ViewSetup] = element(tag="ViewSetup")
+    attributes: list[IlluminationAttribute | TileAttribute | AngleAttribute | ChannelAttribute] = element(tag='Attributes')
 
 
 class PatternTimePoints(BaseXmlModel, tag="Timepoints"):
@@ -136,7 +156,7 @@ class SpimData2(SpimData, tag="SpimData"):
     https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/SpimData2.java#L64
     """
 
-    view_interest_points: ViewInterestPoints = element(tag='ViewInterestPoints')
+    view_interest_points: Optional[ViewInterestPoints] = element(tag='ViewInterestPoints')
     bounding_boxes: BoundingBoxes = element(tag='BoundingBoxes')
     # point_spread_functions: PointSpreadFunctions
     # stitching_results: StitchingResults
