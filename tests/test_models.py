@@ -4,7 +4,7 @@ from pydantic_xml import BaseXmlModel, element
 import pytest
 from xmldiff import main
 import xmltodict
-from pydantic_bigstitcher import BasePath, PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ViewSetup, ViewSetups, ZarrImageLoader, ZGroup
+from pydantic_bigstitcher import BasePath, PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ViewRegistrations, ViewSetup, ViewSetups, ZarrImageLoader, ZGroup
 
 def test_simple_model():
   data = """
