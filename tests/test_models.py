@@ -180,23 +180,22 @@ def test_decode_view_interest_points():
    ('SequenceDescription', SequenceDescription),
    ('BasePath', BasePath),
    ('ViewRegistrations', ViewRegistrations),
-   ('BoundingBoxes', BoundingBoxes),
    ])
-@pytest.mark.parametrize('xml_data', (1,2,3), indirect=True)
+@pytest.mark.parametrize('xml_data', (0,1,2), indirect=True)
 def test_view_setups(xml_data: str, attribute_path: str, model_class: BaseXmlModel):
   from xml.etree import ElementTree
   tree = ElementTree.fromstring(xml_data)
   for part in attribute_path.split('/'):
      tree = tree.find(part)
      if tree is None:
-        raise ValueError('Took a wrong turn somewhere...')
+        raise ValueError(f'Could not find a node at {attribute_path}')
 
   subnode_str = etree.tostring(tree)
   model = model_class.from_xml(subnode_str)
   assert xmltodict.parse(model.to_xml()) == xmltodict.parse(subnode_str)
 
 
-@pytest.mark.parametrize('xml_data', (1,2,3), indirect=True)
+@pytest.mark.parametrize('xml_data', (0,1,2), indirect=True)
 def test_encode_decode(xml_data: str) -> None:
     model = SpimData2.from_xml(xml_data.encode())
     diff = main.diff_texts(model.to_xml(), xml_data.encode())

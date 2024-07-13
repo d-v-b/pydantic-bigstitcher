@@ -166,9 +166,9 @@ class SpimData2(SpimData, tag="SpimData"):
     https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/SpimData2.java#L64
     """
 
-    view_interest_points: Optional[ViewInterestPoints] = element(tag='ViewInterestPoints')
-    bounding_boxes: BoundingBoxes = element(tag='BoundingBoxes', nillable=True)
-    point_spread_functions: PointSpreadFunctions = element(tag='PointSpreadFunctions', nillable=True)
-    stitching_results: StitchingResults = element(tag='StitchingResults', nillable=True)
-    intensity_adjustments: IntensityAdjustments = element(tag='IntensityAdjustments', nillable=True)
+    view_interest_points: ViewInterestPoints = element(tag='ViewInterestPoints', default=None)
+    bounding_boxes: BoundingBoxes = element(tag='BoundingBoxes', nillable=True, default=None)
+    point_spread_functions: PointSpreadFunctions = element(tag='PointSpreadFunctions', nillable=True, default=None)
+    stitching_results: StitchingResults = element(tag='StitchingResults', nillable=True, default=None)
+    intensity_adjustments: IntensityAdjustments = element(tag='IntensityAdjustments', nillable=True, default=None)
 
