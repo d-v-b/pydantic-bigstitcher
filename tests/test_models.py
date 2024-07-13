@@ -4,7 +4,7 @@ from pydantic_xml import BaseXmlModel, element
 import pytest
 from xmldiff import main
 import xmltodict
-from pydantic_bigstitcher import BasePath, PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ViewRegistrations, ViewSetup, ViewSetups, ZarrImageLoader, ZGroup
+from pydantic_bigstitcher import BasePath, BoundingBoxes, PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ViewRegistrations, ViewSetup, ViewSetups, ZarrImageLoader, ZGroup
 
 def test_simple_model():
   data = """
@@ -179,7 +179,8 @@ def test_decode_view_interest_points():
    ('SequenceDescription/ViewSetups', ViewSetups),
    ('SequenceDescription', SequenceDescription),
    ('BasePath', BasePath),
-   ('ViewRegistrations', ViewRegistrations)
+   ('ViewRegistrations', ViewRegistrations),
+   ('BoundingBoxes', BoundingBoxes),
    ])
 @pytest.mark.parametrize('xml_data', (1,2,3), indirect=True)
 def test_view_setups(xml_data: str, attribute_path: str, model_class: BaseXmlModel):
@@ -198,6 +199,6 @@ def test_view_setups(xml_data: str, attribute_path: str, model_class: BaseXmlMod
 @pytest.mark.parametrize('xml_data', (1,2,3), indirect=True)
 def test_encode_decode(xml_data: str) -> None:
     model = SpimData2.from_xml(xml_data.encode())
-    diff = main.diff_texts(model.to_xml(), xml_data)
+    diff = main.diff_texts(model.to_xml(), xml_data.encode())
     assert diff == []
 

@@ -151,14 +151,24 @@ class BoundingBoxes(BaseXmlModel):
     """
     data: list[BoundingBox] | None = element(tag='BoundingBox', default=None)
 
+class PointSpreadFunctions(BaseXmlModel):
+    ...
+
+class StitchingResults(BaseXmlModel):
+    ...
+
+class IntensityAdjustments(BaseXmlModel):
+    ...
+
+
 class SpimData2(SpimData, tag="SpimData"):
     """
     https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/SpimData2.java#L64
     """
 
     view_interest_points: Optional[ViewInterestPoints] = element(tag='ViewInterestPoints')
-    bounding_boxes: BoundingBoxes = element(tag='BoundingBoxes')
-    # point_spread_functions: PointSpreadFunctions
-    # stitching_results: StitchingResults
-    # intensity_adjustments: IntensityAdjustments
+    bounding_boxes: BoundingBoxes = element(tag='BoundingBoxes', nillable=True)
+    point_spread_functions: PointSpreadFunctions = element(tag='PointSpreadFunctions', nillable=True)
+    stitching_results: StitchingResults = element(tag='StitchingResults', nillable=True)
+    intensity_adjustments: IntensityAdjustments = element(tag='IntensityAdjustments', nillable=True)
 
