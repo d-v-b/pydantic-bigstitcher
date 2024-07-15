@@ -1,10 +1,35 @@
 from xml.etree import ElementTree as etree
 
+from pydantic_xml import BaseXmlModel, element
 import pytest
 from xmldiff import main
+import xmltodict
+from pydantic_bigstitcher import BasePath, BoundingBoxes, PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ViewRegistrations, ViewSetup, ViewSetups, ZarrImageLoader, ZGroup
 
-from pydantic_bigstitcher import PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ZarrImageLoader, ZGroup
+def test_simple_model():
+  data = """
+   <A>
+    <B>
+      <prop_b>1</prop_b>
+    </B>
+    <B>
+      <prop_b>1</prop_b>
+    </B>
+    <C>
+      <prop_c>1</prop_c>
+    </C>
+    </A>
+   """
+  class B(BaseXmlModel):
+    prop_b: int = element(tag='prop_b')
+    
+  class C(BaseXmlModel):
+    prop_c: int = element(tag='prop_c')
+  class A(BaseXmlModel):
+    b: list[B] = element(tag='B') 
+    c: list[C] = element(tag='C')
 
+  A.from_xml(data)
 
 def test_decode_zarr_image_loader():
     data = """
@@ -148,10 +173,31 @@ def test_decode_view_interest_points():
     data_xml_str = etree.tostring(etree.fromstring(data))
     diff_result = main.diff_texts(data_xml_str, observed_xml_str)
     assert diff_result == []
-    
 
-@pytest.mark.parametrize('xml_data', (1,2), indirect=('xml_data',))
+
+@pytest.mark.parametrize('attribute_path, model_class', [
+   ('SequenceDescription/ViewSetups', ViewSetups),
+   ('SequenceDescription', SequenceDescription),
+   ('BasePath', BasePath),
+   ('ViewRegistrations', ViewRegistrations),
+   ])
+@pytest.mark.parametrize('xml_data', (0,1,2), indirect=True)
+def test_view_setups(xml_data: str, attribute_path: str, model_class: BaseXmlModel):
+  from xml.etree import ElementTree
+  tree = ElementTree.fromstring(xml_data)
+  for part in attribute_path.split('/'):
+     tree = tree.find(part)
+     if tree is None:
+        raise ValueError(f'Could not find a node at {attribute_path}')
+
+  subnode_str = etree.tostring(tree)
+  model = model_class.from_xml(subnode_str)
+  assert xmltodict.parse(model.to_xml()) == xmltodict.parse(subnode_str)
+
+
+@pytest.mark.parametrize('xml_data', (0,1,2), indirect=True)
 def test_encode_decode(xml_data: str) -> None:
     model = SpimData2.from_xml(xml_data.encode())
-    assert model.to_xml() == xml_data
+    diff = main.diff_texts(model.to_xml(), xml_data.encode())
+    assert diff == []
 
