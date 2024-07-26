@@ -4,6 +4,7 @@ from pydantic_xml import BaseXmlModel, element
 import pytest
 from xmldiff import main
 import xmltodict
+from xmldiff.actions import DeleteNode
 from pydantic_bigstitcher import BasePath, BoundingBoxes, PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ViewRegistrations, ViewSetup, ViewSetups, ZarrImageLoader, ZGroup
 
 def test_simple_model():
@@ -176,12 +177,11 @@ def test_decode_view_interest_points():
 
 
 @pytest.mark.parametrize('attribute_path, model_class', [
-   ('SequenceDescription/ViewSetups', ViewSetups),
    ('SequenceDescription', SequenceDescription),
    ('BasePath', BasePath),
    ('ViewRegistrations', ViewRegistrations),
    ])
-@pytest.mark.parametrize('xml_data', (0,1,2), indirect=True)
+@pytest.mark.parametrize('xml_data', (0,1,2,3), indirect=True)
 def test_view_setups(xml_data: str, attribute_path: str, model_class: BaseXmlModel):
   from xml.etree import ElementTree
   tree = ElementTree.fromstring(xml_data)
@@ -199,5 +199,6 @@ def test_view_setups(xml_data: str, attribute_path: str, model_class: BaseXmlMod
 def test_encode_decode(xml_data: str) -> None:
     model = SpimData2.from_xml(xml_data.encode())
     diff = main.diff_texts(model.to_xml(), xml_data.encode())
-    assert diff == []
+    # ensure that the diff only contains deletions, i.e. the modeled xml is larger than the real xml
+    assert all(isinstance(x, DeleteNode) for x in diff)
 

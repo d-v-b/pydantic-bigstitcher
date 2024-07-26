@@ -93,10 +93,10 @@ class SequenceDescription(BaseXmlModel):
     https://github.com/bigdataviewer/spimdata/blob/46c3878baef80cc4170a33012c8281481dbbfcb2/src/main/java/mpicbg/spim/data/generic/sequence/AbstractSequenceDescription.java#L52
     """
 
-    image_loader: ZarrImageLoader = element(tag="ImageLoader")
-    view_setups: ViewSetups = element(tag="ViewSetups")
-    time_points: PatternTimePoints = element(tag="Timepoints")
-    missing_views: MissingViews = element(tag="MissingViews")
+    image_loader: ZarrImageLoader | None = element(tag="ImageLoader", default=None)
+    view_setups: ViewSetups | None = element(tag="ViewSetups", default=None)
+    time_points: PatternTimePoints | None = element(tag="Timepoints",  default=None)
+    missing_views: MissingViews | None = element(tag="MissingViews",  default=None)
 
 
 class AffineViewTransform(BaseXmlModel):

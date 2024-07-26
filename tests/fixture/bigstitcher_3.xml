@@ -1,0 +1,126 @@
+<SpimData version="0.2">
+    <BasePath type="relative">.</BasePath>
+    <SequenceDescription>
+    </SequenceDescription>
+    <ViewRegistrations>
+    <ViewRegistration timepoint="0" setup="0">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -7096.0 0.0 1.0 0.0 -23408.0003 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="1">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -7096.0 0.0 1.0 0.0 -14363.9998 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="2">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -7096.0 0.0 1.0 0.0 -5320.0 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="3">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -19159.1998 0.0 1.0 0.0 -23408.0003 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="4">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -19159.1998 0.0 1.0 0.0 -14363.9998 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="5">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -19159.1998 0.0 1.0 0.0 -5320.0 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="6">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -31222.3997 0.0 1.0 0.0 -23408.0003 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="7">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -31222.3997 0.0 1.0 0.0 -14363.9998 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="8">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -31222.3997 0.0 1.0 0.0 -5320.0 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="9">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -43285.6033 0.0 1.0 0.0 -23408.0003 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="10">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -43285.6033 0.0 1.0 0.0 -14363.9998 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="11">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -43285.6033 0.0 1.0 0.0 -5320.0 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="12">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -55348.8039 0.0 1.0 0.0 -23408.0003 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="13">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="14">
+    <ViewTransform type="affine">
+    <Name>Translation to Nominal Grid</Name>
+    <affine>
+    1.0 0.0 0.0 -55348.8039 0.0 1.0 0.0 -5320.0 0.0 0.0 1.0 -28672.0
+    </affine>
+    </ViewTransform>
+    </ViewRegistration>
+    </ViewRegistrations>
+    </SpimData>
