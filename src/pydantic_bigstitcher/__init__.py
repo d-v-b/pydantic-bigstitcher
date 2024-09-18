@@ -25,6 +25,7 @@ class Zarr(BaseXmlModel):
 
 class N5(BaseXmlModel):
     typ: str = attr(name='type')
+    path: str
     
 class ZarrImageLoader(BaseXmlModel, tag='ImageLoader', skip_empty=True):
     fmt: str = attr(name="format")

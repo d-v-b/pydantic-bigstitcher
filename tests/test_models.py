@@ -181,10 +181,10 @@ def test_decode_view_interest_points():
    ('BasePath', BasePath),
    ('ViewRegistrations', ViewRegistrations),
    ])
-@pytest.mark.parametrize('xml_data', (0,1,2,3), indirect=True)
-def test_view_setups(xml_data: str, attribute_path: str, model_class: BaseXmlModel):
+@pytest.mark.parametrize('bigstitcher_xml', (0,1,2,3), indirect=True)
+def test_view_setups(bigstitcher_xml: str, attribute_path: str, model_class: BaseXmlModel):
   from xml.etree import ElementTree
-  tree = ElementTree.fromstring(xml_data)
+  tree = ElementTree.fromstring(bigstitcher_xml)
   for part in attribute_path.split('/'):
      tree = tree.find(part)
      if tree is None:
@@ -192,13 +192,17 @@ def test_view_setups(xml_data: str, attribute_path: str, model_class: BaseXmlMod
 
   subnode_str = etree.tostring(tree)
   model = model_class.from_xml(subnode_str)
-  assert xmltodict.parse(model.to_xml()) == xmltodict.parse(subnode_str)
+  observed = xmltodict.parse(model.to_xml())
+  expected = xmltodict.parse(subnode_str)
+  assert observed == expected
 
 
-@pytest.mark.parametrize('xml_data', (0,1,2), indirect=True)
-def test_encode_decode(xml_data: str) -> None:
-    model = SpimData2.from_xml(xml_data.encode())
-    diff = main.diff_texts(model.to_xml(), xml_data.encode())
+@pytest.mark.parametrize('bigstitcher_xml', (0,1,2), indirect=True)
+def test_encode_decode(bigstitcher_xml: str) -> None:
+    model = SpimData2.from_xml(bigstitcher_xml.encode())
+    model_xml = model.to_xml()
+    data_xml_encoded = bigstitcher_xml.encode()
+    diff = main.diff_texts(model_xml, data_xml_encoded)
     # ensure that the diff only contains deletions, i.e. the modeled xml is larger than the real xml
     assert all(isinstance(x, DeleteNode) for x in diff)
 
