@@ -23,12 +23,20 @@ class Zarr(BaseXmlModel):
     typ: str = attr(name="type")
     path: str
 
+class N5(BaseXmlModel):
+    typ: str = attr(name='type')
+    
 class ZarrImageLoader(BaseXmlModel, tag='ImageLoader', skip_empty=True):
     fmt: str = attr(name="format")
     version: str = attr()
     s3bucket: Optional[str] = element(default=None)
     zarr: Zarr = element(tag="zarr")
     zgroups: ZGroups = element(tag="zgroups")
+
+class BDVN5ImageLoader(BaseXmlModel, tag='ImageLoader', skip_empty=True):
+    fmt: str = attr(name="format")
+    version: str = attr()
+    n5: N5 = element(tag='n5')
 
 class VoxelSize(BaseXmlModel):
     unit: str = element()
@@ -93,7 +101,7 @@ class SequenceDescription(BaseXmlModel):
     https://github.com/bigdataviewer/spimdata/blob/46c3878baef80cc4170a33012c8281481dbbfcb2/src/main/java/mpicbg/spim/data/generic/sequence/AbstractSequenceDescription.java#L52
     """
 
-    image_loader: ZarrImageLoader | None = element(tag="ImageLoader", default=None)
+    image_loader: ZarrImageLoader |  BDVN5ImageLoader | None = element(tag="ImageLoader", default=None)
     view_setups: ViewSetups | None = element(tag="ViewSetups", default=None)
     time_points: PatternTimePoints | None = element(tag="Timepoints",  default=None)
     missing_views: MissingViews | None = element(tag="MissingViews",  default=None)
@@ -134,6 +142,7 @@ class ViewInterestPointsFile(BaseXmlModel):
     label: str = attr()
     params: str = attr()
     path: str 
+
 class ViewInterestPoints(BaseXmlModel):
     data: list[ViewInterestPointsFile] = element(tag='ViewInterestPointsFile')
 
