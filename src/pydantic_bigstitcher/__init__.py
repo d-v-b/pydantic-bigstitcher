@@ -4,7 +4,7 @@ from typing import Any, Literal, Optional
 
 from pydantic_xml import BaseXmlModel, attr, element
 
-from pydantic_bigstitcher.transforms import Axes, HomoAffine
+from pydantic_bigstitcher.transforms import Axes, HoAffine
 from pydantic_bigstitcher.transforms import AffineViewTransform
 
 

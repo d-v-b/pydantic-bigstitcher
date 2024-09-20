@@ -15,7 +15,7 @@ axes: tuple[Axes, ...] = ("z", "y", "x")
 VectorMap: TypeAlias = Mapping[T, float]
 MatrixMap: TypeAlias = Mapping[T, VectorMap[T]]
 
-class HomoAffine(BaseModel, Generic[T]):
+class HoAffine(BaseModel, Generic[T]):
     """
     Model a homogeneous affine transformation with named axes. The transform is decomposed into
     a translation transform and an affine transform.
@@ -26,7 +26,7 @@ class HomoAffine(BaseModel, Generic[T]):
 class Transform(BaseModel, Generic[T]):
     name: str
     type: str
-    transform: HomoAffine[T]
+    transform: HoAffine[T]
 
 def destringify_tuple(data: str) -> tuple[str, ...]:
     return tuple(data.split(' '))
@@ -57,17 +57,17 @@ def parse_transform_xyz(tx: AffineViewTransform) -> Transform:
         name=tx.name,
         type=tx.typ,
         transform=
-        HomoAffine[Axes](
+        HoAffine[Axes](
             translation=trans_dict,
             affine=aff_dict
         )
         )
 
-def flatten_affine(tx: HomoAffine, axes_out: tuple[str, ...]) -> tuple[float, ...]:
+def flatten_hoaffine(tx: HoAffine, axes_out: tuple[str, ...]) -> tuple[float, ...]:
     out: tuple[float, ...] = ()
     for ax_o in axes_out:
         for ax_i in axes_out:
             out += (tx.affine[ax_o][ax_i],)
-        out += (tx.translation[ax_i], )
+        out += (tx.translation[ax_o], )
     return out
 
