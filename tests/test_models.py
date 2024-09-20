@@ -214,7 +214,7 @@ def test_transform():
       'y': {'x': 0.0, 'y': 1.0, 'z': 0.0},
       'z': {'x': 0.0, 'y': 0.0, 'z': 1.0},
       }
-  affine_str = '1.0 0.0 0.0 -7096.0 0.0 1.0 0.0 -5320.0 0.0 0.0 1.0 -28672.0'
+  affine_str = f"1.0 0.0 0.0 {translation['x']} 0.0 1.0 0.0 {translation['y']} 0.0 0.0 1.0 {translation['z']}"
   transform_xml = (
       '<ViewTransform type="affine">'
       '<Name>Translation to Nominal Grid</Name>'
