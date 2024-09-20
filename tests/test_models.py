@@ -208,13 +208,13 @@ def test_encode_decode(bigstitcher_xml: str) -> None:
     assert all(isinstance(x, DeleteNode) for x in diff)
 
 def test_transform():
-  translation = {'x': -7096.0, 'y': -5320.0, 'z': -28672.0}
-  affine = {
-      'x': {'x': 1.0, 'y': 0.0, 'z': 0.0},
-      'y': {'x': 0.0, 'y': 1.0, 'z': 0.0},
-      'z': {'x': 0.0, 'y': 0.0, 'z': 1.0},
+  trs = {'x': -7096.0, 'y': -5320.0, 'z': -28672.0}
+  aff = {
+      'x': {'x': 1.2, 'y': 0.2, 'z': 0.0},
+      'y': {'x': 0.0, 'y': 1.5, 'z': 0.0},
+      'z': {'x': 3.0, 'y': 0.0, 'z': 1.0},
       }
-  affine_str = f"1.0 0.0 0.0 {translation['x']} 0.0 1.0 0.0 {translation['y']} 0.0 0.0 1.0 {translation['z']}"
+  affine_str = f"{aff['x']['x']} {aff['x']['y']} {aff['x']['z']} {trs['x']} {aff['y']['x']} {aff['y']['y']} {aff['y']['z']} {trs['y']} {aff['z']['x']} {aff['z']['y']} {aff['z']['z']} {trs['z']}"
   transform_xml = (
       '<ViewTransform type="affine">'
       '<Name>Translation to Nominal Grid</Name>'
@@ -224,5 +224,5 @@ def test_transform():
 
   tx_model = AffineViewTransform.from_xml(transform_xml)
   tx = tx_model.to_transform()
-  assert tx.transform == HoAffine(affine=affine, translation=translation)
+  assert tx.transform == HoAffine(affine=aff, translation=trs)
   assert stringify_tuple(map(str, flatten_hoaffine(tx.transform, axes_out=('x','y','z')))) == affine_str
