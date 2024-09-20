@@ -4,6 +4,9 @@ from typing import Any, Literal, Optional
 
 from pydantic_xml import BaseXmlModel, attr, element
 
+from pydantic_bigstitcher.transforms import Axes, HoAffine
+from pydantic_bigstitcher.transforms import AffineViewTransform
+
 
 class BasePath(BaseXmlModel):
     typ: Literal["relative", "absolute"] = attr(name="type")
@@ -26,7 +29,8 @@ class Zarr(BaseXmlModel):
 class N5(BaseXmlModel):
     typ: str = attr(name='type')
     path: str
-    
+
+
 class ZarrImageLoader(BaseXmlModel, tag='ImageLoader', skip_empty=True):
     fmt: str = attr(name="format")
     version: str = attr()
@@ -106,12 +110,6 @@ class SequenceDescription(BaseXmlModel):
     view_setups: ViewSetups | None = element(tag="ViewSetups", default=None)
     time_points: PatternTimePoints | None = element(tag="Timepoints",  default=None)
     missing_views: MissingViews | None = element(tag="MissingViews",  default=None)
-
-
-class AffineViewTransform(BaseXmlModel):
-    typ: Literal["affine"] = attr(name="type")
-    name: str = element(tag="Name")
-    affine: str = element(tag="affine")
 
 
 class ViewRegistration(BaseXmlModel):

@@ -6,6 +6,7 @@ from xmldiff import main
 import xmltodict
 from xmldiff.actions import DeleteNode
 from pydantic_bigstitcher import BasePath, BoundingBoxes, PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ViewRegistrations, ViewSetup, ViewSetups, ZarrImageLoader, ZGroup
+from pydantic_bigstitcher.transforms import AffineViewTransform, HoAffine, flatten_hoaffine, stringify_tuple
 
 def test_simple_model():
   data = """
@@ -206,3 +207,25 @@ def test_encode_decode(bigstitcher_xml: str) -> None:
     # ensure that the diff only contains deletions, i.e. the modeled xml is larger than the real xml
     assert all(isinstance(x, DeleteNode) for x in diff)
 
+def test_transform():
+  trs = {'x': -7096.0, 'y': -5320.0, 'z': -28672.0}
+  aff = {
+      'x': {'x': 1.2, 'y': 0.2, 'z': 0.0},
+      'y': {'x': 0.0, 'y': 1.5, 'z': 0.0},
+      'z': {'x': 3.0, 'y': 0.0, 'z': 1.0},
+      }
+  affine_str = f"{aff['x']['x']} {aff['x']['y']} {aff['x']['z']} {trs['x']} {aff['y']['x']} {aff['y']['y']} {aff['y']['z']} {trs['y']} {aff['z']['x']} {aff['z']['y']} {aff['z']['z']} {trs['z']}"
+  name = "Translation to Nominal Grid"
+  transform_xml = (
+      '<ViewTransform type="affine">'
+      f'<Name>{name}</Name>'
+      f'<affine>{affine_str}</affine>'
+      '</ViewTransform>'
+    )
+
+  tx_model = AffineViewTransform.from_xml(transform_xml)
+  assert tx_model.name== name
+  assert tx_model.typ == 'affine'
+  tx = tx_model.to_transform()
+  assert tx.transform == HoAffine(affine=aff, translation=trs)
+  assert stringify_tuple(map(str, flatten_hoaffine(tx.transform, axes_out=('x','y','z')))) == affine_str
