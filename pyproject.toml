@@ -24,7 +24,10 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["pydantic-xml>=2.9.2"]
+dependencies = [
+  "pydantic-xml>=2.9.2",
+  "numpy"
+  ]
 
 [project.urls]
 Documentation = "https://github.com/unknown/pydantic-bigstitcher#readme"
