@@ -17,7 +17,7 @@ from pydantic_bigstitcher import (
     ZarrImageLoader,
     ZGroup,
 )
-from pydantic_bigstitcher.transforms import (
+from pydantic_bigstitcher.transform import (
     AffineViewTransform,
     HoAffine,
     flatten_hoaffine,
