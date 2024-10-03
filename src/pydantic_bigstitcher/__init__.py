@@ -9,7 +9,7 @@ from pydantic_bigstitcher.transforms import AffineViewTransform
 
 
 class BasePath(BaseXmlModel):
-    typ: Literal["relative", "absolute"] = attr(name="type")
+    type: Literal["relative", "absolute"] = attr(name="type")
     path: str
 
 class ZGroup(BaseXmlModel, tag="zgroup"):
@@ -19,15 +19,15 @@ class ZGroup(BaseXmlModel, tag="zgroup"):
 
 
 class ZGroups(BaseXmlModel):
-    zgroups: list[ZGroup] = element(tag="zgroup")
+    elements: list[ZGroup] = element(tag="zgroup")
 
 
 class Zarr(BaseXmlModel):
-    typ: str = attr(name="type")
+    type: str = attr(name="type")
     path: str
 
 class N5(BaseXmlModel):
-    typ: str = attr(name='type')
+    type: str = attr(name='type')
     path: str
 
 
@@ -83,13 +83,12 @@ class ChannelAttribute(BaseXmlModel, tag='Attributes'):
 
 class ViewSetups(BaseXmlModel):
     # the order of the definition of these attributes should match the order of the data in xml
-    view_setups: list[ViewSetup] = element(tag="ViewSetup")
+    elements: list[ViewSetup] = element(tag="ViewSetup")
     attributes: list[IlluminationAttribute | TileAttribute | AngleAttribute | ChannelAttribute] = element(tag='Attributes')
 
-
 class PatternTimePoints(BaseXmlModel, tag="Timepoints"):
-    typ: Literal["pattern"] = attr(name="type")
-    timepoints: list[str] = element(tag="integerpattern")
+    type: Literal["pattern"] = attr(name="type")
+    integerpattern: list[str] = element()
 
 
 class MissingView(BaseXmlModel):
@@ -98,10 +97,10 @@ class MissingView(BaseXmlModel):
 
 
 class MissingViews(BaseXmlModel):
-    views: list[MissingView] = element("MissingView", default=None)
+    elements: list[MissingView] = element("MissingView", default=None)
 
 
-class SequenceDescription(BaseXmlModel):
+class SequenceDescription(BaseXmlModel, search_mode='unordered'):
     """
     https://github.com/bigdataviewer/spimdata/blob/46c3878baef80cc4170a33012c8281481dbbfcb2/src/main/java/mpicbg/spim/data/generic/sequence/AbstractSequenceDescription.java#L52
     """
@@ -143,7 +142,7 @@ class ViewInterestPointsFile(BaseXmlModel):
     path: str 
 
 class ViewInterestPoints(BaseXmlModel):
-    data: list[ViewInterestPointsFile] = element(tag='ViewInterestPointsFile')
+    elements: list[ViewInterestPointsFile] | None = element(tag='ViewInterestPointsFile', default=None)
 
 class BoundingBox(BaseXmlModel):
     """
@@ -157,7 +156,7 @@ class BoundingBoxes(BaseXmlModel):
     """
     https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/boundingbox/BoundingBoxes.java#L29
     """
-    data: list[BoundingBox] | None = element(tag='BoundingBox', default=None)
+    elements: list[BoundingBox] | None = element(tag='BoundingBox', default=None)
 
 class PointSpreadFunctions(BaseXmlModel):
     ...

@@ -7,6 +7,7 @@ import xmltodict
 from xmldiff.actions import DeleteNode
 from pydantic_bigstitcher import BasePath, BoundingBoxes, PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ViewRegistrations, ViewSetup, ViewSetups, ZarrImageLoader, ZGroup
 from pydantic_bigstitcher.transforms import AffineViewTransform, HoAffine, flatten_hoaffine, stringify_tuple
+import deepdiff
 
 def test_simple_model():
   data = """
@@ -182,7 +183,7 @@ def test_decode_view_interest_points():
    ('BasePath', BasePath),
    ('ViewRegistrations', ViewRegistrations),
    ])
-@pytest.mark.parametrize('bigstitcher_xml', (0,1,2,3), indirect=True)
+@pytest.mark.parametrize('bigstitcher_xml', (0,1,2,3,4,5), indirect=True)
 def test_view_setups(bigstitcher_xml: str, attribute_path: str, model_class: BaseXmlModel):
   from xml.etree import ElementTree
   tree = ElementTree.fromstring(bigstitcher_xml)
@@ -197,15 +198,13 @@ def test_view_setups(bigstitcher_xml: str, attribute_path: str, model_class: Bas
   expected = xmltodict.parse(subnode_str)
   assert observed == expected
 
-
-@pytest.mark.parametrize('bigstitcher_xml', (0,1,2), indirect=True)
-def test_encode_decode(bigstitcher_xml: str) -> None:
+@pytest.mark.parametrize('bigstitcher_xml', (0,1,2,3,4,5), indirect=True)
+def test_encode_decode_dict(bigstitcher_xml: str) -> None:
     model = SpimData2.from_xml(bigstitcher_xml.encode())
-    model_xml = model.to_xml()
-    data_xml_encoded = bigstitcher_xml.encode()
-    diff = main.diff_texts(model_xml, data_xml_encoded)
-    # ensure that the diff only contains deletions, i.e. the modeled xml is larger than the real xml
-    assert all(isinstance(x, DeleteNode) for x in diff)
+    observed = xmltodict.parse(model.to_xml())
+    expected = xmltodict.parse(bigstitcher_xml)
+    diff = deepdiff.diff.DeepDiff(observed, expected)
+    assert diff == {}
 
 def test_transform():
   trs = {'x': -7096.0, 'y': -5320.0, 'z': -28672.0}
