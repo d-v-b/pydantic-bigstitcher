@@ -88,7 +88,7 @@ class ViewSetups(BaseXmlModel):
 
 class PatternTimePoints(BaseXmlModel, tag="Timepoints"):
     type: Literal["pattern"] = attr(name="type")
-    integerpattern: list[str] = element()
+    elements: list[str] = element(tag='integerpattern')
 
 
 class MissingView(BaseXmlModel):
