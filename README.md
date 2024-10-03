@@ -3,7 +3,7 @@
 [![PyPI - Version](https://img.shields.io/pypi/v/pydantic-bigstitcher.svg)](https://pypi.org/project/pydantic-bigstitcher)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pydantic-bigstitcher.svg)](https://pypi.org/project/pydantic-bigstitcher)
 
------
+---
 
 Pydantic models for [bigsticher](https://github.com/PreibischLab/BigStitcher). This is very minimal right now, with features being added only as needed.
 
