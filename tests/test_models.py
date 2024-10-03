@@ -4,13 +4,27 @@ from pydantic_xml import BaseXmlModel, element
 import pytest
 from xmldiff import main
 import xmltodict
-from xmldiff.actions import DeleteNode
-from pydantic_bigstitcher import BasePath, BoundingBoxes, PatternTimePoints, SequenceDescription, SpimData2, ViewInterestPoints, ViewRegistrations, ViewSetup, ViewSetups, ZarrImageLoader, ZGroup
-from pydantic_bigstitcher.transforms import AffineViewTransform, HoAffine, flatten_hoaffine, stringify_tuple
+from pydantic_bigstitcher import (
+    BasePath,
+    PatternTimePoints,
+    SequenceDescription,
+    SpimData2,
+    ViewInterestPoints,
+    ViewRegistrations,
+    ZarrImageLoader,
+    ZGroup,
+)
+from pydantic_bigstitcher.transforms import (
+    AffineViewTransform,
+    HoAffine,
+    flatten_hoaffine,
+    stringify_tuple,
+)
 import deepdiff
 
+
 def test_simple_model():
-  data = """
+    data = """
    <A>
     <B>
       <prop_b>1</prop_b>
@@ -23,16 +37,19 @@ def test_simple_model():
     </C>
     </A>
    """
-  class B(BaseXmlModel):
-    prop_b: int = element(tag='prop_b')
-    
-  class C(BaseXmlModel):
-    prop_c: int = element(tag='prop_c')
-  class A(BaseXmlModel):
-    b: list[B] = element(tag='B') 
-    c: list[C] = element(tag='C')
 
-  A.from_xml(data)
+    class B(BaseXmlModel):
+        prop_b: int = element(tag="prop_b")
+
+    class C(BaseXmlModel):
+        prop_c: int = element(tag="prop_c")
+
+    class A(BaseXmlModel):
+        b: list[B] = element(tag="B")
+        c: list[C] = element(tag="C")
+
+    A.from_xml(data)
+
 
 def test_decode_zarr_image_loader():
     data = """
@@ -50,6 +67,7 @@ def test_decode_zarr_image_loader():
     data_xml_str = etree.tostring(etree.fromstring(data))
     diff_result = main.diff_texts(data_xml_str, observed_xml_str)
     assert diff_result == []
+
 
 def test_decode_zarr_image_loader_2():
     data = """<ImageLoader format="bdv.multimg.zarr" version="1.0">
@@ -96,6 +114,7 @@ def test_decode_timepoints():
 
     diff_result = main.diff_texts(data_xml_str, observed_xml_str)
     assert diff_result == []
+
 
 def test_decode_sequence_description():
     data = """
@@ -162,6 +181,7 @@ def test_decode_sequence_description():
     diff_result = main.diff_texts(data_xml_str, observed_xml_str)
     assert diff_result == []
 
+
 def test_decode_view_interest_points():
     data = """
       <ViewInterestPoints>
@@ -178,27 +198,34 @@ def test_decode_view_interest_points():
     assert diff_result == []
 
 
-@pytest.mark.parametrize('attribute_path, model_class', [
-   ('SequenceDescription', SequenceDescription),
-   ('BasePath', BasePath),
-   ('ViewRegistrations', ViewRegistrations),
-   ])
-@pytest.mark.parametrize('bigstitcher_xml', (0,1,2,3,4,5), indirect=True)
-def test_view_setups(bigstitcher_xml: str, attribute_path: str, model_class: BaseXmlModel):
-  from xml.etree import ElementTree
-  tree = ElementTree.fromstring(bigstitcher_xml)
-  for part in attribute_path.split('/'):
-     tree = tree.find(part)
-     if tree is None:
-        raise ValueError(f'Could not find a node at {attribute_path}')
+@pytest.mark.parametrize(
+    "attribute_path, model_class",
+    [
+        ("SequenceDescription", SequenceDescription),
+        ("BasePath", BasePath),
+        ("ViewRegistrations", ViewRegistrations),
+    ],
+)
+@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5), indirect=True)
+def test_view_setups(
+    bigstitcher_xml: str, attribute_path: str, model_class: BaseXmlModel
+):
+    from xml.etree import ElementTree
 
-  subnode_str = etree.tostring(tree)
-  model = model_class.from_xml(subnode_str)
-  observed = xmltodict.parse(model.to_xml())
-  expected = xmltodict.parse(subnode_str)
-  assert observed == expected
+    tree = ElementTree.fromstring(bigstitcher_xml)
+    for part in attribute_path.split("/"):
+        tree = tree.find(part)
+        if tree is None:
+            raise ValueError(f"Could not find a node at {attribute_path}")
 
-@pytest.mark.parametrize('bigstitcher_xml', (0,1,2,3,4,5), indirect=True)
+    subnode_str = etree.tostring(tree)
+    model = model_class.from_xml(subnode_str)
+    observed = xmltodict.parse(model.to_xml())
+    expected = xmltodict.parse(subnode_str)
+    assert observed == expected
+
+
+@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5), indirect=True)
 def test_encode_decode_dict(bigstitcher_xml: str) -> None:
     model = SpimData2.from_xml(bigstitcher_xml.encode())
     observed = xmltodict.parse(model.to_xml())
@@ -206,25 +233,31 @@ def test_encode_decode_dict(bigstitcher_xml: str) -> None:
     diff = deepdiff.diff.DeepDiff(observed, expected)
     assert diff == {}
 
+
 def test_transform():
-  trs = {'x': -7096.0, 'y': -5320.0, 'z': -28672.0}
-  aff = {
-      'x': {'x': 1.2, 'y': 0.2, 'z': 0.0},
-      'y': {'x': 0.0, 'y': 1.5, 'z': 0.0},
-      'z': {'x': 3.0, 'y': 0.0, 'z': 1.0},
-      }
-  affine_str = f"{aff['x']['x']} {aff['x']['y']} {aff['x']['z']} {trs['x']} {aff['y']['x']} {aff['y']['y']} {aff['y']['z']} {trs['y']} {aff['z']['x']} {aff['z']['y']} {aff['z']['z']} {trs['z']}"
-  name = "Translation to Nominal Grid"
-  transform_xml = (
-      '<ViewTransform type="affine">'
-      f'<Name>{name}</Name>'
-      f'<affine>{affine_str}</affine>'
-      '</ViewTransform>'
+    trs = {"x": -7096.0, "y": -5320.0, "z": -28672.0}
+    aff = {
+        "x": {"x": 1.2, "y": 0.2, "z": 0.0},
+        "y": {"x": 0.0, "y": 1.5, "z": 0.0},
+        "z": {"x": 3.0, "y": 0.0, "z": 1.0},
+    }
+    affine_str = f"{aff['x']['x']} {aff['x']['y']} {aff['x']['z']} {trs['x']} {aff['y']['x']} {aff['y']['y']} {aff['y']['z']} {trs['y']} {aff['z']['x']} {aff['z']['y']} {aff['z']['z']} {trs['z']}"
+    name = "Translation to Nominal Grid"
+    transform_xml = (
+        '<ViewTransform type="affine">'
+        f"<Name>{name}</Name>"
+        f"<affine>{affine_str}</affine>"
+        "</ViewTransform>"
     )
 
-  tx_model = AffineViewTransform.from_xml(transform_xml)
-  assert tx_model.name== name
-  assert tx_model.typ == 'affine'
-  tx = tx_model.to_transform()
-  assert tx.transform == HoAffine(affine=aff, translation=trs)
-  assert stringify_tuple(map(str, flatten_hoaffine(tx.transform, axes_out=('x','y','z')))) == affine_str
+    tx_model = AffineViewTransform.from_xml(transform_xml)
+    assert tx_model.name == name
+    assert tx_model.typ == "affine"
+    tx = tx_model.to_transform()
+    assert tx.transform == HoAffine(affine=aff, translation=trs)
+    assert (
+        stringify_tuple(
+            map(str, flatten_hoaffine(tx.transform, axes_out=("x", "y", "z")))
+        )
+        == affine_str
+    )

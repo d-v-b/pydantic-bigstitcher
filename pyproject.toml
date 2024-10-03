@@ -84,3 +84,35 @@ exclude_lines = [
   "if __name__ == .__main__.:",
   "if TYPE_CHECKING:",
 ]
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+namespace_packages = false
+
+[tool.ruff]
+line-length = 100
+force-exclude = true
+extend-exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".ruff_cache",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "notebooks", # temporary, until we achieve compatibility with ruff ≥ 0.6
+    "venv",
+    "docs",
+]
+
+[tool.pytest.ini_options]
+minversion = "7"
+testpaths = ["tests"]
+log_cli_level = "INFO"
