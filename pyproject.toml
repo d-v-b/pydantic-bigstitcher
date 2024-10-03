@@ -116,3 +116,6 @@ extend-exclude = [
 minversion = "7"
 testpaths = ["tests"]
 log_cli_level = "INFO"
+xfail_strict = true
+addopts = ["-ra", "--strict-config", "--strict-markers"] 
+filterwarnings = ["error"] 
