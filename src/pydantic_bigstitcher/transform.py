@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from pydantic_xml import BaseXmlModel, attr, element
-import numpy as np
+from collections.abc import Iterable, Mapping
+from typing import Any, Generic, Literal, TypeAlias, TypeVar
 
-from typing import Iterable, Mapping, TypeVar, TypeAlias, Literal, Generic
+import numpy as np
 from pydantic import BaseModel
+from pydantic_xml import BaseXmlModel, attr, element
 
 T = TypeVar("T", bound=str)
 
@@ -49,21 +50,17 @@ class AffineViewTransform(BaseXmlModel, tag="ViewTransform"):
         return parse_transform_xyz(self)
 
 
-def parse_transform_xyz(tx: AffineViewTransform) -> Transform:
-    homo_affine_arrayed = np.array(
-        tuple(float(x) for x in destringify_tuple(tx.affine))
-    ).reshape(len(axes), len(axes) + 1)
+def parse_transform_xyz(tx: AffineViewTransform) -> Transform[Any]:
+    homo_affine_arrayed = np.array(tuple(float(x) for x in destringify_tuple(tx.affine))).reshape(
+        len(axes), len(axes) + 1
+    )
     trans_array = homo_affine_arrayed[:, -1]
     aff_array = homo_affine_arrayed[:, :-1]
     aff_dict = {}
 
-    trans_dict: VectorMap[Axes] = {
-        ax: trans_array[idx] for idx, ax in enumerate(reversed(axes))
-    }
+    trans_dict: VectorMap[Axes] = {ax: trans_array[idx] for idx, ax in enumerate(reversed(axes))}
     for oidx, oax in enumerate(reversed(axes)):
-        aff_dict[oax] = {
-            iax: aff_array[oidx][iidx] for iidx, iax in enumerate(reversed(axes))
-        }
+        aff_dict[oax] = {iax: aff_array[oidx][iidx] for iidx, iax in enumerate(reversed(axes))}
 
     return Transform(
         name=tx.name,
@@ -72,7 +69,7 @@ def parse_transform_xyz(tx: AffineViewTransform) -> Transform:
     )
 
 
-def flatten_hoaffine(tx: HoAffine, axes_out: tuple[str, ...]) -> tuple[float, ...]:
+def flatten_hoaffine(tx: HoAffine[Any], axes_out: tuple[str, ...]) -> tuple[float, ...]:
     out: tuple[float, ...] = ()
     for ax_o in axes_out:
         for ax_i in axes_out:

@@ -1,0 +1,17 @@
+site_name: pydantic-bigstitcher
+site_url: https://d-v-b.github.io/pydantic-bigstitcher/
+theme:
+  name: material
+watch: ["src"]
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: numpy
+            members_order: source
+            separate_signature: true
+            filters: ["!^_"]
+            docstring_options:
+              ignore_init_summary: true
+            merge_init_into_class: true

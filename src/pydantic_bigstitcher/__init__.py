@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Literal, Optional
+from typing import Literal
 
 from pydantic_xml import BaseXmlModel, attr, element
 
-from pydantic_bigstitcher.transforms import Axes, HoAffine
-from pydantic_bigstitcher.transforms import AffineViewTransform
+from pydantic_bigstitcher.transform import AffineViewTransform
 
 
 class BasePath(BaseXmlModel):
@@ -36,7 +35,7 @@ class N5(BaseXmlModel):
 class ZarrImageLoader(BaseXmlModel, tag="ImageLoader", skip_empty=True):
     fmt: str = attr(name="format")
     version: str = attr()
-    s3bucket: Optional[str] = element(default=None)
+    s3bucket: str | None = element(default=None)
     zarr: Zarr = element(tag="zarr")
     zgroups: ZGroups = element(tag="zgroups")
 
@@ -95,9 +94,9 @@ class ChannelAttribute(BaseXmlModel, tag="Attributes"):
 class ViewSetups(BaseXmlModel):
     # the order of the definition of these attributes should match the order of the data in xml
     elements: list[ViewSetup] = element(tag="ViewSetup")
-    attributes: list[
-        IlluminationAttribute | TileAttribute | AngleAttribute | ChannelAttribute
-    ] = element(tag="Attributes")
+    attributes: list[IlluminationAttribute | TileAttribute | AngleAttribute | ChannelAttribute] = (
+        element(tag="Attributes")
+    )
 
 
 class PatternTimePoints(BaseXmlModel, tag="Timepoints"):
@@ -172,7 +171,7 @@ class BoundingBox(BaseXmlModel):
     """
 
     title: str = attr()
-    mininum: str = attr(name="min")
+    minimum: str = attr(name="min")
     maximum: str = attr(name="max")
 
 
@@ -205,9 +204,7 @@ class SpimData2(SpimData, tag="SpimData"):
     point_spread_functions: PointSpreadFunctions | None = element(
         tag="PointSpreadFunctions", default=None
     )
-    stitching_results: StitchingResults | None = element(
-        tag="StitchingResults", default=None
-    )
+    stitching_results: StitchingResults | None = element(tag="StitchingResults", default=None)
     intensity_adjustments: IntensityAdjustments | None = element(
         tag="IntensityAdjustments", default=None
     )
