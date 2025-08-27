@@ -15,7 +15,8 @@ from pydantic_bigstitcher import (
     ViewInterestPoints,
     ViewRegistrations,
     ZarrImageLoader,
-    ZGroup,
+    ZGroupPathAsAttribute,
+    ZGroupPathAsElement,
 )
 from pydantic_bigstitcher.transform import (
     AffineViewTransform,
@@ -91,17 +92,25 @@ def test_decode_zarr_image_loader_2() -> None:
     assert diff_result == []
 
 
-def test_decode_zgroup() -> None:
+def test_decode_zgrouppathaselement() -> None:
     data = """
         <zgroup setup="0" timepoint="0">
           <path>tile_x_0000_y_0000_z_0000_ch_488.zarr</path>
         </zgroup>"""
-    observed = ZGroup.from_xml(data)
-    observed_xml_str = etree.tostring(etree.fromstring(observed.to_xml()))
-    data_xml_str = etree.tostring(etree.fromstring(data))
+    observed = xmltodict.parse(ZGroupPathAsElement.from_xml(data).to_xml())
+    expected = xmltodict.parse(data)
+    diff = deepdiff.diff.DeepDiff(observed, expected)
+    assert diff == {}
 
-    diff_result = main.diff_texts(data_xml_str, observed_xml_str)
-    assert diff_result == []
+
+def test_decode_zgrouppathasattribute() -> None:
+    data = """
+        <zgroup setup="0" timepoint="0" path="tile_x_0000_y_0000_z_0000_ch_488.zarr">
+        </zgroup>"""
+    observed = xmltodict.parse(ZGroupPathAsAttribute.from_xml(data).to_xml())
+    expected = xmltodict.parse(data)
+    diff = deepdiff.diff.DeepDiff(observed, expected)
+    assert diff == {}
 
 
 def test_decode_timepoints() -> None:
@@ -260,3 +269,10 @@ def test_transform() -> None:
     )
 
 
+# @pytest.mark.parametrize("bigstitcher_xml", (6, ), indirect=True)
+# def test_encode_decode_dict(bigstitcher_xml: str) -> None:
+#     model = SpimData2.from_xml(bigstitcher_xml.encode())
+#     observed = xmltodict.parse(model.to_xml())
+#     expected = xmltodict.parse(bigstitcher_xml)
+#     diff = deepdiff.diff.DeepDiff(observed, expected)
+#     assert diff == {}
