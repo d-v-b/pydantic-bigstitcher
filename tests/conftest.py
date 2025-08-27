@@ -1,7 +1,7 @@
 import pytest
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def bigstitcher_xml(request: pytest.FixtureRequest) -> str:
     fname = f"tests/fixture/bigstitcher_{request.param}.xml"
 
