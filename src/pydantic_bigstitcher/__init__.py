@@ -14,10 +14,30 @@ class BasePath(BaseXmlModel):
     path: str
 
 
-class ZGroup(BaseXmlModel, tag="zgroup"):
+class ZGroupPathAsElement(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
+    path: str = element()
 
-    path: str | None = element(default=None)
+    # both timepoint and tp are accepted
+    timepoint: Optional[str] = attr(name="timepoint", default=None)
+    tp: Optional[str] = attr(name="tp", default=None, exclude=True)
+
+    @model_validator(mode="after")
+    def _coalesce_timepoint(self):
+        # prefer explicit 'timepoint', fall back to 'tp'
+        if self.timepoint is None and self.tp is not None:
+            self.timepoint = self.tp
+        # (optional) detect conflicting inputs
+        if self.timepoint is not None and self.tp is not None and self.timepoint != self.tp:
+            raise ValueError('Attributes "timepoint" and "tp" disagree.')
+        if self.timepoint is None:
+            raise ValueError('Provide either "timepoint" or "tp".')
+        return self
+    
+
+class ZGroupPathAsAttribute(BaseXmlModel, tag="zgroup"):
+    setup: str = attr()
+    path: str = attr()
 
     timepoint: Optional[str] = attr(name="timepoint", default=None)
     tp: Optional[str] = attr(name="tp", default=None, exclude=True)
@@ -36,7 +56,7 @@ class ZGroup(BaseXmlModel, tag="zgroup"):
 
 
 class ZGroups(BaseXmlModel):
-    elements: list[ZGroup] = element(tag="zgroup")
+    elements: list[ZGroupPathAsElement | ZGroupPathAsAttribute] = element(tag="zgroup")
 
 
 class Zarr(BaseXmlModel):
