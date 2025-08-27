@@ -14,49 +14,35 @@ class BasePath(BaseXmlModel):
     path: str
 
 
-class ZGroupPathAsElement(BaseXmlModel, tag="zgroup"):
+class ZGroupA(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
     path: str = element()
+    timepoint: str = attr()
 
-    # both timepoint and tp are accepted
-    timepoint: Optional[str] = attr(name="timepoint", default=None)
-    tp: Optional[str] = attr(name="tp", default=None, exclude=True)
 
-    @model_validator(mode="after")
-    def _coalesce_timepoint(self):
-        # prefer explicit 'timepoint', fall back to 'tp'
-        if self.timepoint is None and self.tp is not None:
-            self.timepoint = self.tp
-        # (optional) detect conflicting inputs
-        if self.timepoint is not None and self.tp is not None and self.timepoint != self.tp:
-            raise ValueError('Attributes "timepoint" and "tp" disagree.')
-        if self.timepoint is None:
-            raise ValueError('Provide either "timepoint" or "tp".')
-        return self
+class ZGroupB(BaseXmlModel, tag="zgroup"):
+    setup: str = attr()
+    path: str = element()
+    tp: str = attr()
     
 
-class ZGroupPathAsAttribute(BaseXmlModel, tag="zgroup"):
+class ZGroupC(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
     path: str = attr()
+    timepoint: str = attr()
+    
 
-    timepoint: Optional[str] = attr(name="timepoint", default=None)
-    tp: Optional[str] = attr(name="tp", default=None, exclude=True)
-
-    @model_validator(mode="after")
-    def _coalesce_timepoint(self):
-        # prefer explicit 'timepoint', fall back to 'tp'
-        if self.timepoint is None and self.tp is not None:
-            self.timepoint = self.tp
-        # (optional) detect conflicting inputs
-        if self.timepoint is not None and self.tp is not None and self.timepoint != self.tp:
-            raise ValueError('Attributes "timepoint" and "tp" disagree.')
-        if self.timepoint is None:
-            raise ValueError('Provide either "timepoint" or "tp".')
-        return self
+class ZGroupD(BaseXmlModel, tag="zgroup"):
+    setup: str = attr()
+    path: str = attr()
+    tp: str = attr()
 
 
-class ZGroups(BaseXmlModel):
-    elements: list[ZGroupPathAsElement | ZGroupPathAsAttribute] = element(tag="zgroup")
+ZGroup = ZGroupA | ZGroupB | ZGroupC | ZGroupD
+
+
+class ZGroups(BaseXmlModel, tag="zgroups"):
+    elements: list[ZGroup] = element(tag="zgroup")
 
 
 class Zarr(BaseXmlModel):

@@ -15,8 +15,7 @@ from pydantic_bigstitcher import (
     ViewInterestPoints,
     ViewRegistrations,
     ZarrImageLoader,
-    ZGroupPathAsAttribute,
-    ZGroupPathAsElement,
+    ZGroups,
 )
 from pydantic_bigstitcher.transform import (
     AffineViewTransform,
@@ -92,22 +91,32 @@ def test_decode_zarr_image_loader_2() -> None:
     assert diff_result == []
 
 
-def test_decode_zgrouppathaselement() -> None:
-    data = """
+@pytest.mark.parametrize(
+    "data",
+    [
+        """
         <zgroup setup="0" timepoint="0">
           <path>tile_x_0000_y_0000_z_0000_ch_488.zarr</path>
-        </zgroup>"""
-    observed = xmltodict.parse(ZGroupPathAsElement.from_xml(data).to_xml())
-    expected = xmltodict.parse(data)
-    diff = deepdiff.diff.DeepDiff(observed, expected)
-    assert diff == {}
-
-
-def test_decode_zgrouppathasattribute() -> None:
-    data = """
+        </zgroup>
+        """,
+        """
         <zgroup setup="0" timepoint="0" path="tile_x_0000_y_0000_z_0000_ch_488.zarr">
-        </zgroup>"""
-    observed = xmltodict.parse(ZGroupPathAsAttribute.from_xml(data).to_xml())
+        </zgroup>
+        """,
+        """
+        <zgroup setup="0" tp="0">
+          <path>tile_x_0000_y_0000_z_0000_ch_488.zarr</path>
+        </zgroup>
+        """,
+        """
+        <zgroup setup="0" tp="0" path="tile_x_0000_y_0000_z_0000_ch_488.zarr">
+        </zgroup>
+        """,
+    ],
+)
+def test_decode_zgroups(data) -> None:
+    data = "<zgroups>" + data + "</zgroups>"
+    observed = xmltodict.parse(ZGroups.from_xml(data).to_xml())
     expected = xmltodict.parse(data)
     diff = deepdiff.diff.DeepDiff(observed, expected)
     assert diff == {}
