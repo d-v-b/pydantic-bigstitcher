@@ -200,6 +200,7 @@ def test_decode_view_interest_points() -> None:
     assert diff_result == []
 
 
+@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5), indirect=True)
 @pytest.mark.parametrize(
     "attribute_path, model_class",
     [
@@ -208,7 +209,6 @@ def test_decode_view_interest_points() -> None:
         ("ViewRegistrations", ViewRegistrations),
     ],
 )
-@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5), indirect=True)
 def test_view_setups(bigstitcher_xml: str, attribute_path: str, model_class: BaseXmlModel) -> None:
     tree: etree.Element = ElementTree.fromstring(bigstitcher_xml)
     for part in attribute_path.split("/"):
@@ -258,3 +258,5 @@ def test_transform() -> None:
         stringify_tuple(map(str, flatten_hoaffine(tx.transform, axes_out=("x", "y", "z"))))
         == affine_str
     )
+
+

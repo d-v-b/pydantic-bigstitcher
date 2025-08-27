@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Literal
 
+from pydantic import model_validator
+from typing import Optional
 from pydantic_xml import BaseXmlModel, attr, element
 
 from pydantic_bigstitcher.transform import AffineViewTransform
@@ -14,8 +16,23 @@ class BasePath(BaseXmlModel):
 
 class ZGroup(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
-    timepoint: str = attr()
+
     path: str | None = element(default=None)
+
+    timepoint: Optional[str] = attr(name="timepoint", default=None)
+    tp: Optional[str] = attr(name="tp", default=None, exclude=True)
+
+    @model_validator(mode="after")
+    def _coalesce_timepoint(self):
+        # prefer explicit 'timepoint', fall back to 'tp'
+        if self.timepoint is None and self.tp is not None:
+            self.timepoint = self.tp
+        # (optional) detect conflicting inputs
+        if self.timepoint is not None and self.tp is not None and self.timepoint != self.tp:
+            raise ValueError('Attributes "timepoint" and "tp" disagree.')
+        if self.timepoint is None:
+            raise ValueError('Provide either "timepoint" or "tp".')
+        return self
 
 
 class ZGroups(BaseXmlModel):
@@ -58,11 +75,19 @@ class ViewSetupAttributes(BaseXmlModel):
     angle: str = element()
 
 
-class ViewSetup(BaseXmlModel):
+class Camera(BaseXmlModel):
+    name: str = element()
+    exposure_time: str = element(tag="exposureTime")
+    exposure_units: str = element(tag="exposureUnits")
+
+
+class ViewSetup(BaseXmlModel, search_mode="unordered"):
+# class ViewSetup(BaseXmlModel):
     ident: str = element(tag="id")
     name: str = element()
     size: str = element()
     voxel_size: VoxelSize = element(tag="voxelSize")
+    camera: Camera | None = element(tag="camera", default=None)
     attributes: ViewSetupAttributes = element(tag="attributes")
 
 
@@ -140,7 +165,7 @@ class ViewRegistrations(BaseXmlModel):
     elements: list[ViewRegistration] = element(tag="ViewRegistration")
 
 
-class SpimData(BaseXmlModel):
+class SpimData(BaseXmlModel, search_mode="unordered"):
     """
     https://github.com/bigdataviewer/spimdata/blob/46c3878baef80cc4170a33012c8281481dbbfcb2/src/main/java/mpicbg/spim/data/generic/AbstractSpimData.java#L36
     """
