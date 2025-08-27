@@ -218,7 +218,7 @@ def test_decode_view_interest_points() -> None:
     assert diff_result == []
 
 
-@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5), indirect=True)
+@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5, 6), indirect=True)
 @pytest.mark.parametrize(
     "attribute_path, model_class",
     [
@@ -242,7 +242,7 @@ def test_view_setups(bigstitcher_xml: str, attribute_path: str, model_class: Bas
     assert observed == expected
 
 
-@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5), indirect=True)
+@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5, 6), indirect=True)
 def test_encode_decode_dict(bigstitcher_xml: str) -> None:
     model = SpimData2.from_xml(bigstitcher_xml.encode())
     observed = xmltodict.parse(model.to_xml())
