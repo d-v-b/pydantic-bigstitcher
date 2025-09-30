@@ -239,7 +239,8 @@ def test_view_setups(bigstitcher_xml: str, attribute_path: str, model_class: Bas
     model = model_class.from_xml(subnode_str)
     observed = xmltodict.parse(model.to_xml())
     expected = xmltodict.parse(subnode_str)
-    assert observed == expected
+    diff = deepdiff.diff.DeepDiff(observed, expected)
+    assert diff == {}
 
 
 @pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5, 6), indirect=True)
