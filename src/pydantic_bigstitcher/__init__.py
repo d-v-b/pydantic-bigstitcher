@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Literal
 
 from xml.etree.ElementTree import Element, fromstring, tostring
 from pydantic import model_validator, PrivateAttr
@@ -36,7 +36,7 @@ class ZGroupD(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
     path: str = attr()
     tp: str = attr()
-    indicies: Optional[str] = attr(default=None)
+    indicies: str | None = attr(default=None)
 
 ZGroup = ZGroupA | ZGroupB | ZGroupC | ZGroupD
 
