@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file was shared by Nikita Vladimirov:
+https://forum.image.sc/t/are-there-publicly-available-mesospim-datasets-unprocessed/116020/9?u=malbert
+
+Copied description:
+- 2 channels, 2x2 tiles grid, 2 illumination arms, unstitched
+- channels: 488, 561 nm, for staining details see tutorial links below
+- mouse brain cleared by Anna Maria Reuss (UZH/USZ), iDISCO protocol.
+- OME-ZARR with optional XML file to open it eg in BigStitcher
+- BigStitcher tutorial on this particular data: https://www.youtube.com/watch?v=fWseoLI_2jg
+-->
+<SpimData version="0.2">
+  <generatedBy>
+    <library version="2021.03">npy2bdv</library>
+    <microscope>
+      <name>default</name>
+      <version>0.0</version>
+      <user>user</user>
+    </microscope>
+  </generatedBy>
+  <BasePath type="relative">.</BasePath>
+  <SequenceDescription>
+    <ImageLoader format="bdv.multimg.zarr" version="3.0">
+      <zarr type="relative">Reuss-MousBrain2x2tiles-2ch.ome.zarr</zarr>
+      <zgroups>
+        <zgroup setup="0" tp="0" path="s0-t0.zarr" indicies="0 0" />
+        <zgroup setup="1" tp="0" path="s1-t0.zarr" indicies="0 0" />
+        <zgroup setup="2" tp="0" path="s2-t0.zarr" indicies="0 0" />
+        <zgroup setup="3" tp="0" path="s3-t0.zarr" indicies="0 0" />
+        <zgroup setup="4" tp="0" path="s4-t0.zarr" indicies="0 0" />
+        <zgroup setup="5" tp="0" path="s5-t0.zarr" indicies="0 0" />
+        <zgroup setup="6" tp="0" path="s6-t0.zarr" indicies="0 0" />
+        <zgroup setup="7" tp="0" path="s7-t0.zarr" indicies="0 0" />
+        <zgroup setup="8" tp="0" path="s8-t0.zarr" indicies="0 0" />
+        <zgroup setup="9" tp="0" path="s9-t0.zarr" indicies="0 0" />
+        <zgroup setup="10" tp="0" path="s10-t0.zarr" indicies="0 0" />
+        <zgroup setup="11" tp="0" path="s11-t0.zarr" indicies="0 0" />
+        <zgroup setup="12" tp="0" path="s12-t0.zarr" indicies="0 0" />
+        <zgroup setup="13" tp="0" path="s13-t0.zarr" indicies="0 0" />
+        <zgroup setup="14" tp="0" path="s14-t0.zarr" indicies="0 0" />
+        <zgroup setup="15" tp="0" path="s15-t0.zarr" indicies="0 0" />
+      </zgroups>
+    </ImageLoader>
+    <ViewSetups>
+      <ViewSetup>
+        <id>0</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 0</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>0</illumination>
+          <channel>0</channel>
+          <tile>0</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>1</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 1</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>0</illumination>
+          <channel>0</channel>
+          <tile>1</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>2</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 2</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>0</illumination>
+          <channel>0</channel>
+          <tile>2</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>3</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 3</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>0</illumination>
+          <channel>0</channel>
+          <tile>3</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>4</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 4</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>0</illumination>
+          <channel>1</channel>
+          <tile>0</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>5</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 5</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>0</illumination>
+          <channel>1</channel>
+          <tile>1</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>6</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 6</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>0</illumination>
+          <channel>1</channel>
+          <tile>2</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>7</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 7</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>0</illumination>
+          <channel>1</channel>
+          <tile>3</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>8</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 8</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>1</illumination>
+          <channel>0</channel>
+          <tile>0</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>9</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 9</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>1</illumination>
+          <channel>0</channel>
+          <tile>1</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>10</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 10</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>1</illumination>
+          <channel>0</channel>
+          <tile>2</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>11</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 11</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>1</illumination>
+          <channel>0</channel>
+          <tile>3</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>12</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 12</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>1</illumination>
+          <channel>1</channel>
+          <tile>0</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>13</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 13</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>1</illumination>
+          <channel>1</channel>
+          <tile>1</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>14</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 14</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>1</illumination>
+          <channel>1</channel>
+          <tile>2</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <ViewSetup>
+        <id>15</id>
+        <camera>
+          <name>default</name>
+          <exposureTime>0</exposureTime>
+          <exposureUnits>s</exposureUnits>
+        </camera>
+        <name>setup 15</name>
+        <size>2048 2048 615</size>
+        <voxelSize>
+          <unit>um</unit>
+          <size>3.26 3.26 10.0</size>
+        </voxelSize>
+        <attributes>
+          <illumination>1</illumination>
+          <channel>1</channel>
+          <tile>3</tile>
+          <angle>0</angle>
+        </attributes>
+      </ViewSetup>
+      <Attributes name="illumination">
+        <Illumination>
+          <id>0</id>
+          <name>Left</name>
+        </Illumination>
+        <Illumination>
+          <id>1</id>
+          <name>Right</name>
+        </Illumination>
+      </Attributes>
+      <Attributes name="channel">
+        <Channel>
+          <id>0</id>
+          <name>488 nm</name>
+        </Channel>
+        <Channel>
+          <id>1</id>
+          <name>561 nm</name>
+        </Channel>
+      </Attributes>
+      <Attributes name="tile">
+        <Tile>
+          <id>0</id>
+          <name>0</name>
+        </Tile>
+        <Tile>
+          <id>1</id>
+          <name>1</name>
+        </Tile>
+        <Tile>
+          <id>2</id>
+          <name>2</name>
+        </Tile>
+        <Tile>
+          <id>3</id>
+          <name>3</name>
+        </Tile>
+      </Attributes>
+      <Attributes name="angle">
+        <Angle>
+          <id>0</id>
+          <name>0.0</name>
+        </Angle>
+      </Attributes>
+    </ViewSetups>
+    <Timepoints type="pattern">
+      <integerpattern>0</integerpattern>
+    </Timepoints>
+    <MissingViews />
+  </SequenceDescription>
+  <ViewRegistrations>
+    <ViewRegistration timepoint="0" setup="0">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 -861.5031 0.0 1.0 0.0 23895.71 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="1">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 -861.5031 0.0 1.0 0.0 25585.28 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="2">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 674.6933 0.0 1.0 0.0 23895.71 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="3">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 674.6933 0.0 1.0 0.0 25585.28 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="4">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 -861.5031 0.0 1.0 0.0 23895.71 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="5">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 -861.5031 0.0 1.0 0.0 25585.28 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="6">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 674.6933 0.0 1.0 0.0 23895.71 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="7">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 674.6933 0.0 1.0 0.0 25585.28 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="8">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 -861.5031 0.0 1.0 0.0 23895.71 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="9">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 -861.5031 0.0 1.0 0.0 25585.28 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="10">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 674.6933 0.0 1.0 0.0 23895.71 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="11">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 674.6933 0.0 1.0 0.0 25585.28 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="12">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 -861.5031 0.0 1.0 0.0 23895.71 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="13">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 -861.5031 0.0 1.0 0.0 25585.28 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="14">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 674.6933 0.0 1.0 0.0 23895.71 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+    <ViewRegistration timepoint="0" setup="15">
+      <ViewTransform type="affine">
+        <Name>Translation to Regular Grid</Name>
+        <affine>1.0 0.0 0.0 674.6933 0.0 1.0 0.0 25585.28 0.0 0.0 1.0 6145.0</affine>
+      </ViewTransform>
+      <ViewTransform type="affine">
+        <Name>calibration</Name>
+        <affine>1.0 0.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 0.0 3.067484662576687 0.0</affine>
+      </ViewTransform>
+    </ViewRegistration>
+  </ViewRegistrations>
+  <ViewInterestPoints />
+  <BoundingBoxes />
+  <PointSpreadFunctions />
+  <StitchingResults />
+  <IntensityAdjustments />
+</SpimData>

@@ -15,7 +15,7 @@ from pydantic_bigstitcher import (
     ViewInterestPoints,
     ViewRegistrations,
     ZarrImageLoader,
-    ZGroup,
+    ZGroups,
 )
 from pydantic_bigstitcher.transform import (
     AffineViewTransform,
@@ -91,17 +91,35 @@ def test_decode_zarr_image_loader_2() -> None:
     assert diff_result == []
 
 
-def test_decode_zgroup() -> None:
-    data = """
+@pytest.mark.parametrize(
+    "data",
+    [
+        """
         <zgroup setup="0" timepoint="0">
           <path>tile_x_0000_y_0000_z_0000_ch_488.zarr</path>
-        </zgroup>"""
-    observed = ZGroup.from_xml(data)
-    observed_xml_str = etree.tostring(etree.fromstring(observed.to_xml()))
-    data_xml_str = etree.tostring(etree.fromstring(data))
-
-    diff_result = main.diff_texts(data_xml_str, observed_xml_str)
-    assert diff_result == []
+        </zgroup>
+        """,
+        """
+        <zgroup setup="0" timepoint="0" path="tile_x_0000_y_0000_z_0000_ch_488.zarr">
+        </zgroup>
+        """,
+        """
+        <zgroup setup="0" tp="0">
+          <path>tile_x_0000_y_0000_z_0000_ch_488.zarr</path>
+        </zgroup>
+        """,
+        """
+        <zgroup setup="0" tp="0" path="tile_x_0000_y_0000_z_0000_ch_488.zarr">
+        </zgroup>
+        """,
+    ],
+)
+def test_decode_zgroups(data) -> None:
+    data = "<zgroups>" + data + "</zgroups>"
+    observed = xmltodict.parse(ZGroups.from_xml(data).to_xml())
+    expected = xmltodict.parse(data)
+    diff = deepdiff.diff.DeepDiff(observed, expected)
+    assert diff == {}
 
 
 def test_decode_timepoints() -> None:
@@ -200,6 +218,7 @@ def test_decode_view_interest_points() -> None:
     assert diff_result == []
 
 
+@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5, 6), indirect=True)
 @pytest.mark.parametrize(
     "attribute_path, model_class",
     [
@@ -208,7 +227,6 @@ def test_decode_view_interest_points() -> None:
         ("ViewRegistrations", ViewRegistrations),
     ],
 )
-@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5), indirect=True)
 def test_view_setups(bigstitcher_xml: str, attribute_path: str, model_class: BaseXmlModel) -> None:
     tree: etree.Element = ElementTree.fromstring(bigstitcher_xml)
     for part in attribute_path.split("/"):
@@ -221,10 +239,11 @@ def test_view_setups(bigstitcher_xml: str, attribute_path: str, model_class: Bas
     model = model_class.from_xml(subnode_str)
     observed = xmltodict.parse(model.to_xml())
     expected = xmltodict.parse(subnode_str)
-    assert observed == expected
+    diff = deepdiff.diff.DeepDiff(observed, expected)
+    assert diff == {}
 
 
-@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5), indirect=True)
+@pytest.mark.parametrize("bigstitcher_xml", (0, 1, 2, 3, 4, 5, 6), indirect=True)
 def test_encode_decode_dict(bigstitcher_xml: str) -> None:
     model = SpimData2.from_xml(bigstitcher_xml.encode())
     observed = xmltodict.parse(model.to_xml())
@@ -258,3 +277,12 @@ def test_transform() -> None:
         stringify_tuple(map(str, flatten_hoaffine(tx.transform, axes_out=("x", "y", "z"))))
         == affine_str
     )
+
+
+# @pytest.mark.parametrize("bigstitcher_xml", (6, ), indirect=True)
+# def test_encode_decode_dict(bigstitcher_xml: str) -> None:
+#     model = SpimData2.from_xml(bigstitcher_xml.encode())
+#     observed = xmltodict.parse(model.to_xml())
+#     expected = xmltodict.parse(bigstitcher_xml)
+#     diff = deepdiff.diff.DeepDiff(observed, expected)
+#     assert diff == {}

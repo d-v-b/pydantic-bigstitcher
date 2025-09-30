@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Literal
 
+from xml.etree.ElementTree import Element, fromstring, tostring
+from pydantic import PrivateAttr, ConfigDict
 from pydantic_xml import BaseXmlModel, attr, element
 
 from pydantic_bigstitcher.transform import AffineViewTransform
@@ -12,13 +14,51 @@ class BasePath(BaseXmlModel):
     path: str
 
 
-class ZGroup(BaseXmlModel, tag="zgroup"):
+class ZGroupA(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
     setup: str = attr()
+    path: str = element()
     timepoint: str = attr()
-    path: str | None = element(default=None)
 
 
-class ZGroups(BaseXmlModel):
+class ZGroupB(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
+    setup: str = attr()
+    path: str = element()
+    tp: str = attr()
+    
+
+class ZGroupC(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
+    setup: str = attr()
+    path: str = attr()
+    timepoint: str = attr()
+    
+
+class ZGroupD(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
+    setup: str = attr()
+    path: str = attr()
+    tp: str = attr()
+
+
+class ZGroupE(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
+    setup: str = attr()
+    path: str = attr()
+    tp: str = attr()
+    indicies: str = attr()
+
+
+# Groups A-D capture:
+# 1. "tp" or "timepoint" attribute
+# 2. "path" as element or attribute
+# Group E captures an additional "indicies" attribute
+# as found in the mesospim example XML (bigstitcher_6.xml)
+ZGroup = ZGroupA | ZGroupB | ZGroupC | ZGroupD | ZGroupE
+
+
+class ZGroups(BaseXmlModel, tag="zgroups"):
     elements: list[ZGroup] = element(tag="zgroup")
 
 
@@ -58,11 +98,19 @@ class ViewSetupAttributes(BaseXmlModel):
     angle: str = element()
 
 
-class ViewSetup(BaseXmlModel):
+class Camera(BaseXmlModel):
+    name: str = element()
+    exposure_time: str = element(tag="exposureTime")
+    exposure_units: str = element(tag="exposureUnits")
+
+
+class ViewSetup(BaseXmlModel, search_mode="unordered"):
+# class ViewSetup(BaseXmlModel):
     ident: str = element(tag="id")
     name: str = element()
     size: str = element()
     voxel_size: VoxelSize = element(tag="voxelSize")
+    camera: Camera | None = element(tag="camera", default=None)
     attributes: ViewSetupAttributes = element(tag="attributes")
 
 
@@ -140,7 +188,7 @@ class ViewRegistrations(BaseXmlModel):
     elements: list[ViewRegistration] = element(tag="ViewRegistration")
 
 
-class SpimData(BaseXmlModel):
+class SpimData(BaseXmlModel, search_mode="unordered"):
     """
     https://github.com/bigdataviewer/spimdata/blob/46c3878baef80cc4170a33012c8281481dbbfcb2/src/main/java/mpicbg/spim/data/generic/AbstractSpimData.java#L36
     """
@@ -192,10 +240,66 @@ class StitchingResults(BaseXmlModel): ...
 class IntensityAdjustments(BaseXmlModel): ...
 
 
+# Reusable decorator to preserve unknown direct child XML elements
+def with_extra_children(known_tags: set[str]):
+    """
+    Decorator to add automatic preservation of unknown direct child XML elements.
+    known_tags: set of tag names that the model explicitly handles.
+    """
+    def decorator(cls):
+        cls._KNOWN_TAGS = set(known_tags)
+
+        original_from_xml = getattr(cls, "from_xml", None)
+        original_to_xml = getattr(cls, "to_xml", None)
+
+        @classmethod
+        def from_xml(decorated_cls, data: str | bytes, **kwargs):
+            root = fromstring(data)
+            extras: list[Element] = []
+            for child in list(root):
+                if child.tag not in decorated_cls._KNOWN_TAGS:
+                    extras.append(child)
+                    root.remove(child)
+            # parse only known subtree
+            parsed = original_from_xml(tostring(root), **kwargs)
+            setattr(parsed, "_extra", extras)
+            return parsed
+
+        def to_xml(self, *args, **kwargs):
+            base_xml = original_to_xml(self, *args, **kwargs)
+            root = fromstring(base_xml)
+            extras = getattr(self, "_extra", [])
+            if isinstance(extras, list):
+                for child in extras:
+                    root.append(child)
+            return tostring(root, encoding="unicode")
+
+        cls.from_xml = from_xml
+        cls.to_xml = to_xml
+
+        cls._extra = PrivateAttr(default_factory=list)
+
+        return cls
+    return decorator
+
+
+@with_extra_children(known_tags={
+    "BasePath",
+    "SequenceDescription",
+    "ViewRegistrations",
+    "ViewInterestPoints",
+    "BoundingBoxes",
+    "PointSpreadFunctions",
+    "StitchingResults",
+    "IntensityAdjustments",
+})
 class SpimData2(SpimData, tag="SpimData"):
     """
     https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/SpimData2.java#L64
+
+    Unknown direct child XML elements are preserved via the with_extra_children decorator.
     """
+    model_config = {"arbitrary_types_allowed": True}
 
     view_interest_points: ViewInterestPoints | None = element(
         tag="ViewInterestPoints", default=None
