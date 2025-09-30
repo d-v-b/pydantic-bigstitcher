@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Literal
 
 from xml.etree.ElementTree import Element, fromstring, tostring
-from pydantic import model_validator, PrivateAttr
+from pydantic import PrivateAttr, ConfigDict
 from pydantic_xml import BaseXmlModel, attr, element
 
 from pydantic_bigstitcher.transform import AffineViewTransform
@@ -15,30 +15,47 @@ class BasePath(BaseXmlModel):
 
 
 class ZGroupA(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
     setup: str = attr()
     path: str = element()
     timepoint: str = attr()
 
 
 class ZGroupB(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
     setup: str = attr()
     path: str = element()
     tp: str = attr()
     
 
 class ZGroupC(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
     setup: str = attr()
     path: str = attr()
     timepoint: str = attr()
     
 
 class ZGroupD(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
     setup: str = attr()
     path: str = attr()
     tp: str = attr()
-    indicies: str | None = attr(default=None)
 
-ZGroup = ZGroupA | ZGroupB | ZGroupC | ZGroupD
+
+class ZGroupE(BaseXmlModel, tag="zgroup"):
+    model_config = ConfigDict(extra="forbid")
+    setup: str = attr()
+    path: str = attr()
+    tp: str = attr()
+    indicies: str = attr()
+
+
+# Groups A-D capture:
+# 1. "tp" or "timepoint" attribute
+# 2. "path" as element or attribute
+# Group E captures an additional "indicies" attribute
+# as found in the mesospim example XML (bigstitcher_6.xml)
+ZGroup = ZGroupA | ZGroupB | ZGroupC | ZGroupD | ZGroupE
 
 
 class ZGroups(BaseXmlModel, tag="zgroups"):
