@@ -36,8 +36,7 @@ class ZGroupD(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
     path: str = attr()
     tp: str = attr()
-    indicies: str = attr()
-
+    indicies: Optional[str] = attr(default=None)
 
 ZGroup = ZGroupA | ZGroupB | ZGroupC | ZGroupD
 
