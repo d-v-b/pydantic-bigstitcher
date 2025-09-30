@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Literal, Optional
 
-from pydantic import model_validator
-from typing import Optional
+from xml.etree.ElementTree import Element, fromstring, tostring
+from pydantic import model_validator, PrivateAttr
 from pydantic_xml import BaseXmlModel, attr, element
 
 from pydantic_bigstitcher.transform import AffineViewTransform
@@ -36,6 +36,7 @@ class ZGroupD(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
     path: str = attr()
     tp: str = attr()
+    indicies: str = attr()
 
 
 ZGroup = ZGroupA | ZGroupB | ZGroupC | ZGroupD
@@ -227,6 +228,7 @@ class SpimData2(SpimData, tag="SpimData"):
     """
     https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/SpimData2.java#L64
     """
+    model_config = {"arbitrary_types_allowed": True}
 
     view_interest_points: ViewInterestPoints | None = element(
         tag="ViewInterestPoints", default=None
@@ -239,3 +241,48 @@ class SpimData2(SpimData, tag="SpimData"):
     intensity_adjustments: IntensityAdjustments | None = element(
         tag="IntensityAdjustments", default=None
     )
+
+    # Tags we explicitly model (direct children only)
+    _KNOWN_TAGS: set[str] = {
+        "BasePath",
+        "SequenceDescription",
+        "ViewRegistrations",
+        "ViewInterestPoints",
+        "BoundingBoxes",
+        "PointSpreadFunctions",
+        "StitchingResults",
+        "IntensityAdjustments",
+    }
+
+    # unmodeled direct children
+    _extra: list[Element] = PrivateAttr(default_factory=list)
+
+    @classmethod
+    def from_xml(cls, data: str | bytes, **kwargs) -> "SpimData2":
+
+        root = fromstring(data)
+
+        # collect and remove unknown direct children
+        extras: list[Element] = []
+        for child in list(root):
+            if child.tag not in cls._KNOWN_TAGS.default:
+                extras.append(child)
+                root.remove(child)
+
+        # parse only known subtree
+        obj = super().from_xml(
+            tostring(root),
+            **kwargs)
+        obj._extra = extras
+        return obj
+    
+    def to_xml(self, *args, **kwargs) -> str:
+        base_xml = super().to_xml(*args, **kwargs)
+        root = fromstring(base_xml)
+
+        extras = getattr(self, "_extra", [])
+        if isinstance(extras, list):
+            for child in extras:
+                root.append(child)
+
+        return tostring(root, encoding="unicode")
