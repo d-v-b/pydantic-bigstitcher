@@ -224,9 +224,64 @@ class StitchingResults(BaseXmlModel): ...
 class IntensityAdjustments(BaseXmlModel): ...
 
 
+# Reusable decorator to preserve unknown direct child XML elements
+def with_extra_children(known_tags: set[str]):
+    """
+    Decorator to add automatic preservation of unknown direct child XML elements.
+    known_tags: set of tag names that the model explicitly handles.
+    """
+    def decorator(cls):
+        cls._KNOWN_TAGS = set(known_tags)
+
+        original_from_xml = getattr(cls, "from_xml", None)
+        original_to_xml = getattr(cls, "to_xml", None)
+
+        @classmethod
+        def from_xml(decorated_cls, data: str | bytes, **kwargs):
+            root = fromstring(data)
+            extras: list[Element] = []
+            for child in list(root):
+                if child.tag not in decorated_cls._KNOWN_TAGS:
+                    extras.append(child)
+                    root.remove(child)
+            # parse only known subtree
+            parsed = original_from_xml(tostring(root), **kwargs)
+            setattr(parsed, "_extra", extras)
+            return parsed
+
+        def to_xml(self, *args, **kwargs):
+            base_xml = original_to_xml(self, *args, **kwargs)
+            root = fromstring(base_xml)
+            extras = getattr(self, "_extra", [])
+            if isinstance(extras, list):
+                for child in extras:
+                    root.append(child)
+            return tostring(root, encoding="unicode")
+
+        cls.from_xml = from_xml
+        cls.to_xml = to_xml
+
+        cls._extra = PrivateAttr(default_factory=list)
+
+        return cls
+    return decorator
+
+
+@with_extra_children(known_tags={
+    "BasePath",
+    "SequenceDescription",
+    "ViewRegistrations",
+    "ViewInterestPoints",
+    "BoundingBoxes",
+    "PointSpreadFunctions",
+    "StitchingResults",
+    "IntensityAdjustments",
+})
 class SpimData2(SpimData, tag="SpimData"):
     """
     https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/SpimData2.java#L64
+
+    Unknown direct child XML elements are preserved via the with_extra_children decorator.
     """
     model_config = {"arbitrary_types_allowed": True}
 
@@ -241,48 +296,3 @@ class SpimData2(SpimData, tag="SpimData"):
     intensity_adjustments: IntensityAdjustments | None = element(
         tag="IntensityAdjustments", default=None
     )
-
-    # Tags we explicitly model (direct children only)
-    _KNOWN_TAGS: set[str] = {
-        "BasePath",
-        "SequenceDescription",
-        "ViewRegistrations",
-        "ViewInterestPoints",
-        "BoundingBoxes",
-        "PointSpreadFunctions",
-        "StitchingResults",
-        "IntensityAdjustments",
-    }
-
-    # unmodeled direct children
-    _extra: list[Element] = PrivateAttr(default_factory=list)
-
-    @classmethod
-    def from_xml(cls, data: str | bytes, **kwargs) -> "SpimData2":
-
-        root = fromstring(data)
-
-        # collect and remove unknown direct children
-        extras: list[Element] = []
-        for child in list(root):
-            if child.tag not in cls._KNOWN_TAGS.default:
-                extras.append(child)
-                root.remove(child)
-
-        # parse only known subtree
-        obj = super().from_xml(
-            tostring(root),
-            **kwargs)
-        obj._extra = extras
-        return obj
-    
-    def to_xml(self, *args, **kwargs) -> str:
-        base_xml = super().to_xml(*args, **kwargs)
-        root = fromstring(base_xml)
-
-        extras = getattr(self, "_extra", [])
-        if isinstance(extras, list):
-            for child in extras:
-                root.append(child)
-
-        return tostring(root, encoding="unicode")
