@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
@@ -47,7 +47,7 @@ docs = [
   ]
 
 [tool.hatch.version]
-path = "src/pydantic_bigstitcher/__about__.py"
+source = "vcs"
 
 [tool.hatch.envs.test]
 features = ["test"]
@@ -89,9 +89,7 @@ check = "mypy --install-types --non-interactive {args:src/pydantic_bigstitcher t
 source_pkgs = ["pydantic_bigstitcher", "tests"]
 branch = true
 parallel = true
-omit = [
-  "src/pydantic_bigstitcher/__about__.py",
-]
+omit = []
 
 [tool.coverage.paths]
 pydantic_bigstitcher = ["src/pydantic_bigstitcher", "*/pydantic-bigstitcher/src/pydantic_bigstitcher"]

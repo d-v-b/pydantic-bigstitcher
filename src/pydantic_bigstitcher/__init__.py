@@ -1,12 +1,16 @@
 from __future__ import annotations
 
-from typing import Literal
-
+from collections.abc import Callable
+from importlib.metadata import version
+from typing import Any, Literal
 from xml.etree.ElementTree import Element, fromstring, tostring
-from pydantic import PrivateAttr, ConfigDict
+
+from pydantic import ConfigDict, PrivateAttr
 from pydantic_xml import BaseXmlModel, attr, element
 
 from pydantic_bigstitcher.transform import AffineViewTransform
+
+__version__ = version("pydantic-bigstitcher")
 
 
 class BasePath(BaseXmlModel):
@@ -26,14 +30,14 @@ class ZGroupB(BaseXmlModel, tag="zgroup"):
     setup: str = attr()
     path: str = element()
     tp: str = attr()
-    
+
 
 class ZGroupC(BaseXmlModel, tag="zgroup"):
     model_config = ConfigDict(extra="forbid")
     setup: str = attr()
     path: str = attr()
     timepoint: str = attr()
-    
+
 
 class ZGroupD(BaseXmlModel, tag="zgroup"):
     model_config = ConfigDict(extra="forbid")
@@ -105,7 +109,7 @@ class Camera(BaseXmlModel):
 
 
 class ViewSetup(BaseXmlModel, search_mode="unordered"):
-# class ViewSetup(BaseXmlModel):
+    # class ViewSetup(BaseXmlModel):
     ident: str = element(tag="id")
     name: str = element()
     size: str = element()
@@ -241,19 +245,19 @@ class IntensityAdjustments(BaseXmlModel): ...
 
 
 # Reusable decorator to preserve unknown direct child XML elements
-def with_extra_children(known_tags: set[str]):
+def with_extra_children(known_tags: set[str]) -> Callable[[type[Any]], type[Any]]:
     """
     Decorator to add automatic preservation of unknown direct child XML elements.
     known_tags: set of tag names that the model explicitly handles.
     """
-    def decorator(cls):
+
+    def decorator(cls: type[Any]) -> type[Any]:
         cls._KNOWN_TAGS = set(known_tags)
 
-        original_from_xml = getattr(cls, "from_xml", None)
-        original_to_xml = getattr(cls, "to_xml", None)
+        original_from_xml: Callable[..., Any] = cls.from_xml
+        original_to_xml: Callable[..., Any] = cls.to_xml
 
-        @classmethod
-        def from_xml(decorated_cls, data: str | bytes, **kwargs):
+        def from_xml(decorated_cls: type[Any], /, data: str | bytes, **kwargs: Any) -> Any:
             root = fromstring(data)
             extras: list[Element] = []
             for child in list(root):
@@ -262,10 +266,12 @@ def with_extra_children(known_tags: set[str]):
                     root.remove(child)
             # parse only known subtree
             parsed = original_from_xml(tostring(root), **kwargs)
-            setattr(parsed, "_extra", extras)
+            parsed._extra = extras
             return parsed
 
-        def to_xml(self, *args, **kwargs):
+        from_xml = classmethod(from_xml)  # type: ignore[assignment]
+
+        def to_xml(self: Any, *args: Any, **kwargs: Any) -> str:
             base_xml = original_to_xml(self, *args, **kwargs)
             root = fromstring(base_xml)
             extras = getattr(self, "_extra", [])
@@ -277,28 +283,32 @@ def with_extra_children(known_tags: set[str]):
         cls.from_xml = from_xml
         cls.to_xml = to_xml
 
-        cls._extra = PrivateAttr(default_factory=list)
+        cls._extra = PrivateAttr(default_factory=lambda: [])
 
         return cls
+
     return decorator
 
 
-@with_extra_children(known_tags={
-    "BasePath",
-    "SequenceDescription",
-    "ViewRegistrations",
-    "ViewInterestPoints",
-    "BoundingBoxes",
-    "PointSpreadFunctions",
-    "StitchingResults",
-    "IntensityAdjustments",
-})
+@with_extra_children(
+    known_tags={
+        "BasePath",
+        "SequenceDescription",
+        "ViewRegistrations",
+        "ViewInterestPoints",
+        "BoundingBoxes",
+        "PointSpreadFunctions",
+        "StitchingResults",
+        "IntensityAdjustments",
+    }
+)
 class SpimData2(SpimData, tag="SpimData"):
     """
     https://github.com/PreibischLab/multiview-reconstruction/blob/master/src/main/java/net/preibisch/mvrecon/fiji/spimdata/SpimData2.java#L64
 
     Unknown direct child XML elements are preserved via the with_extra_children decorator.
     """
+
     model_config = {"arbitrary_types_allowed": True}
 
     view_interest_points: ViewInterestPoints | None = element(
