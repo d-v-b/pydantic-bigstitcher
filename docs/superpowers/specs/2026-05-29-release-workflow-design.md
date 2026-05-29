@@ -22,7 +22,8 @@ GitHub Release.
 - **Test gate:** refactor `test.yml` to be reusable (`workflow_call`); release workflow `uses:` it.
 - **Version guard:** build job asserts the built artifact version equals the tag (fails on `.devN+g<sha>`, i.e. untagged/dirty build).
 - **Runtime version:** `importlib.metadata.version("pydantic-bigstitcher")` exposed as `__init__.__version__`.
-- **Sigstore signing:** dropped (YAGNI for v1).
+- **PEP 740 attestations:** kept ON (the `pypa/gh-action-pypi-publish` default `attestations: true`). Free signed provenance uploaded to PyPI via the existing `id-token: write`; no extra job or permission. We skip only the separate `sigstore/gh-action-sigstore-python` job (redundant).
+- **Action pinning:** third-party actions pinned to major-version tags (`@release/v1`, `@v4`); Dependabot already bumps them.
 - **Docs:** `mkdocs gh-deploy` runs on release after PyPI publish.
 
 ## Build-system change: hatch → hatch-vcs
@@ -56,8 +57,8 @@ Trigger: `on: release: { types: [published] }`. Per-job least-privilege `permiss
 
 1. **test** — `uses: ./.github/workflows/test.yml`. Gate: nothing publishes unless the 3.10–3.12 matrix is green.
 2. **build** — needs test. `pip install build`; `python -m build`; assert built version == `github.event.release.tag_name` (no dev suffix). Upload `dist/` as a workflow artifact.
-3. **testpypi** — needs build. `pypa/gh-action-pypi-publish` with `repository-url: https://test.pypi.org/legacy/`, `skip-existing: true`, `continue-on-error: true` (non-blocking). `environment: testpypi`, `permissions: id-token: write`.
-4. **pypi** — needs build (NOT gated on testpypi). `pypa/gh-action-pypi-publish` to PyPI. `environment: pypi`, `permissions: id-token: write`.
+3. **testpypi** — needs build. **No source checkout** — only `download-artifact` into `dist/`, then publish. `pypa/gh-action-pypi-publish@release/v1` with `repository-url: https://test.pypi.org/legacy/`, `skip-existing: true`, `continue-on-error: true` (non-blocking). `environment: testpypi`, `permissions: id-token: write`.
+4. **pypi** — needs build (NOT gated on testpypi). **No source checkout** — only `download-artifact` into `dist/`, then publish. `pypa/gh-action-pypi-publish@release/v1` to PyPI; `attestations: true` (default — leave it on, uploads PEP 740 attestations). `environment: pypi`, `permissions: id-token: write`.
 5. **github-release** — needs pypi. Download the `dist/` artifact; `gh release upload ${{ github.event.release.tag_name }} dist/*`. `permissions: contents: write`. Release notes untouched (whatever `--generate-notes` produced).
 6. **docs** — needs pypi. `hatch run docs:deploy --force` (`mkdocs gh-deploy`). `permissions: contents: write`.
 
@@ -90,6 +91,22 @@ This creates the tag + release, firing `release.yml`: test → build → TestPyP
 
 ## Out of scope
 
-- Sigstore / PEP 740 attestations.
+- Separate `sigstore/gh-action-sigstore-python` job (PEP 740 attestations are kept via the publish action's default — see Decisions).
+- SHA-pinning of actions (using major-version tags + Dependabot instead).
 - Automated version bump commits (hatch-vcs makes them unnecessary).
 - Changelog automation beyond GitHub's `--generate-notes`.
+
+## Best-practices alignment (PyPA, verified 2026-05-29)
+
+Checked against the PyPA guide "Publishing package distribution releases using GitHub
+Actions CI/CD workflows" and `pypa/gh-action-pypi-publish` docs:
+
+- Trusted Publishing (OIDC, no tokens) — recommended approach. ✓
+- Separate build vs. publish jobs — recommended. ✓
+- Artifact upload/download between jobs — recommended. ✓
+- Per-job `id-token: write` scoped to publish jobs — recommended. ✓
+- Dedicated GitHub Environments (`pypi`/`testpypi`) — recommended. ✓
+- TestPyPI first — recommended. ✓
+- **Publish jobs do no source checkout** (download-artifact only, minimal attack
+  surface) — recommended; encoded above. ✓
+- **PEP 740 attestations on by default** — kept (no extra cost). ✓
