@@ -110,6 +110,10 @@ jobs:
         uses: actions/setup-python@e797f83eb20b6d3a32e6acff2e6c9c8b76ec8c79 # v6
         with:
           python-version: "3.12"
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
       - name: Deploy docs
         run: |
           python -m pip install --upgrade pip hatch
