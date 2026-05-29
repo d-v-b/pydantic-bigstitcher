@@ -8,6 +8,11 @@ permissions: {}
 
 jobs:
   test:
+    # The reusable test workflow's job requests `contents: read`; a called
+    # workflow cannot exceed the caller's grant, and the top-level default is
+    # `permissions: {}` (everything none). Grant it explicitly here.
+    permissions:
+      contents: read
     uses: ./.github/workflows/test.yml
 
   build:
