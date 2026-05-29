@@ -26,3 +26,8 @@ __pycache__/
 
 # Auto-generated during builds
 /src/hatch/_version.py
+
+# DS_Store
+.DS_Store
+.claude/
+.worktrees/
