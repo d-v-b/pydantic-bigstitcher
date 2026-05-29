@@ -110,3 +110,13 @@ Actions CI/CD workflows" and `pypa/gh-action-pypi-publish` docs:
 - **Publish jobs do no source checkout** (download-artifact only, minimal attack
   surface) — recommended; encoded above. ✓
 - **PEP 740 attestations on by default** — kept (no extra cost). ✓
+- **SHA-pinned actions** — exceeds the "tags or SHAs" baseline; matches this repo's aversion to mutable refs. ✓
+
+### Sharp edge: Trusted Publishing + reusable workflows
+
+Trusted Publishing **cannot run from inside a reusable (`workflow_call`) workflow** — the
+publish step must live in a job of the top-level `release.yml`. This does NOT block our
+design: only the **test** job uses the reusable `test.yml`; the `testpypi`/`pypi` publish
+jobs are top-level jobs in `release.yml`. Implementation MUST NOT move the publish step
+into a reusable workflow.
+(Ref: pypa/gh-action-pypi-publish issue #283.)
