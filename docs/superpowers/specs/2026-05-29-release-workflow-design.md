@@ -68,7 +68,7 @@ Documented in a `RELEASING.md`; the human performs these:
 
 - **PyPI Trusted Publisher** at pypi.org: owner `d-v-b`, repo `pydantic-bigstitcher`, workflow `release.yml`, environment `pypi`.
 - **TestPyPI Trusted Publisher** at test.pypi.org: same, environment `testpypi`.
-- **GitHub Environments** `pypi` and `testpypi` (optional protection rules / required reviewers).
+- **GitHub Environments** `pypi` and `testpypi`. PyPA recommends a **required reviewer / manual approval** protection rule on the `pypi` environment so every real publish needs a human click.
 - **Enable GitHub Pages** (source: `gh-pages` branch) — currently `has_pages: false` and no `gh-pages` branch exists; `gh-deploy` creates the branch but Pages must be turned on for the site to serve.
 
 ## Release procedure (going forward)
